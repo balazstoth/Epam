@@ -5,10 +5,14 @@ namespace RomanNumbers
 {
     public static class ExtendInt
     {
+        private const int dLimit = 0;
+        private const int uLimit = 4000;
+        private static readonly string msg;
         private static readonly Dictionary<string, int> keys;
 
         static ExtendInt()
         {
+            msg = $"Parameter value must be in range [{dLimit} - {uLimit}]!";
             keys = new Dictionary<string, int>()
             {
                 { "M", 1000 },
@@ -27,10 +31,10 @@ namespace RomanNumbers
             };
         }
 
-        public static string ToRoman(this int number)
+        public static string ToRoman(this int number, bool check = false)
         {
-            if (!isValid(number))
-                return String.Empty;
+            if (check && !isValid(number))
+                return msg;
 
             string result = String.Empty;
             foreach (KeyValuePair<string,int> item in keys)
@@ -50,7 +54,7 @@ namespace RomanNumbers
 
         private static bool isValid(int i)
         {
-            return i < 4000 && i > 0;
+            return i < uLimit && i > dLimit;
         }
     }
 }

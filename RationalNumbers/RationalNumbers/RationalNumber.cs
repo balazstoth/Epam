@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RationalNumbers
 {
@@ -10,20 +6,23 @@ namespace RationalNumbers
     {
         private int _numerator;
         private int _denominator;
+        private const string InvalidDenominatorMsg = "Denominator cannot be 0!";
 
         public double Value { get { return _numerator / _denominator; } }
-
-        private const string InvalidDenominatorMsg = "Denominator cannot be 0!";
 
         public Rational(int num, int den)
         {
             if (den == 0)
                 throw new ArgumentException(InvalidDenominatorMsg);
 
-            _numerator = num;
-            _denominator = den;
+            if(den < 0) //Negative value
+                _numerator = num * (-1);
+            else
+                _numerator = num;
 
-            int greatestCommonDivisor = GCD(num, den);
+            _denominator = Math.Abs(den);
+
+            int greatestCommonDivisor = GCD(Math.Abs(_numerator), Math.Abs(_denominator));
             _numerator /= greatestCommonDivisor;
             _denominator /= greatestCommonDivisor;
         }

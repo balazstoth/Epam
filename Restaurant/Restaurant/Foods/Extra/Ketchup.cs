@@ -15,7 +15,7 @@ namespace Restaurant.Foods.Extra
 
         public override double CalculateHappiness(double happiness)
         {
-            return _food.CalculateHappiness(happiness) + 
+            return _food.CalculateHappiness(CalculateHappiness(happiness));
         }
 
         public override string ToString()

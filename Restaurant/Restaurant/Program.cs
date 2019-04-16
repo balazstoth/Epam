@@ -17,7 +17,7 @@ namespace Restaurant
             Waitress waitress = new Waitress(k1);
 
             waitress.TakeOrder(c1, new Order("Chips", new List<string>() { "Mustard" }));
-            waitress.TakeOrder(c2, new Order("HotDog", new List<string>() { "Ketchup" }));
+            waitress.TakeOrder(c2, new Order("HotDog", new List<string>(){ "Ketchup" }));
             waitress.Start();
 
             Console.ReadKey();

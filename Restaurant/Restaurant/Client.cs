@@ -13,17 +13,12 @@ namespace Restaurant
             Happiness = happiness;
         }
 
-        public void Eat(FoodReadyEventArgs foodReadyEventArgs)
+        public void Eat(IFood food)
         {
-            Console.WriteLine("Starting to eat food, client: {0}, food: {1}", this.ToString(), foodReadyEventArgs.ToString());
-            Console.WriteLine("Nyam nyam");
-            Happiness = foodReadyEventArgs.food.CalculateHappiness(Happiness);
-            Console.WriteLine("Food eaten, client: ", this.ToString());
-        }
-
-        internal void Eat(IFood food)
-        {
-            throw new NotImplementedException();
+            Console.WriteLine("Client: Starting to eat food, client: {0}, food: {1}", this.ToString(), food.ToString());
+            Console.WriteLine("Client: Nyam nyam");
+            Happiness = food.CalculateHappiness(Happiness);
+            Console.WriteLine("Client: Food eaten, client: {0}", this.ToString());
         }
 
         public override string ToString()

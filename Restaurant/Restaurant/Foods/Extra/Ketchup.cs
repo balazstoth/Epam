@@ -12,9 +12,15 @@ namespace Restaurant.Foods.Extra
             :base(food)
         {
         }
+
         public override double CalculateHappiness(double happiness)
         {
-            return _food.CalculateHappiness(happiness);
+            return _food.CalculateHappiness(happiness) + 
+        }
+
+        public override string ToString()
+        {
+            return string.Format($"{typeof(Ketchup).Name}[food={this._food.ToString()}]");
         }
     }
 }

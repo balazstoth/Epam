@@ -1,4 +1,5 @@
 ﻿using Restaurant.Foods;
+using System;
 using System.Collections.Generic;
 
 namespace Restaurant
@@ -20,6 +21,14 @@ namespace Restaurant
             currentClient.Eat(food);
             if (_orders.Count > 0)
                 TakeToTheKitchen();
+            else
+                Console.WriteLine("WaitressRobot: Order(s) processed");
+        }
+
+        public void Start()
+        {
+            Console.WriteLine($"WaitressRobot: Processing {_orders.Count} order(s)...");
+            TakeToTheKitchen();
         }
 
         void TakeToTheKitchen()
@@ -29,15 +38,16 @@ namespace Restaurant
             _kitchen.Cook(current.Order);
         }
 
-        void TakeOrder(Client client, Order order)
+        public void TakeOrder(Client client, Order order)
         {
             _orders.Enqueue(new Request(order,client));
-            order.FoodReady += OrderIsReady; 
+            order.FoodReady += OrderIsReady;
+            Console.WriteLine($"WaitressRobot: Order registered, client: {client.ToString()}, order: {order.ToString()}");
         }
 
         private void OrderIsReady(FoodReadyEventArgs foodReadyEventArgs)
         {
-            ServeOrders(foodReadyEventArgs.food);
+            ServeOrders(foodReadyEventArgs.Food);
         }
     }
 }

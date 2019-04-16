@@ -1,5 +1,6 @@
 ﻿using Restaurant.Foods;
 using Restaurant.Foods.Extra;
+using System;
 using System.Collections.Generic;
 
 namespace Restaurant
@@ -8,14 +9,29 @@ namespace Restaurant
     {
         private IFood AddExtras(IFood mainFood, IEnumerable<string> extras)
         {
-            Food food = mainFood as Food;
-            food.extras = GetExtrasFromOrder(mainFood, extras);
+            IFood food = mainFood;
+            
+            foreach (string item in extras)
+            {
+                if (item == typeof(Ketchup).Name)
+                {
+                    food = new Ketchup(food);
+                }
+
+                if (item == typeof(Mustard).Name)
+                {
+                    food = new Mustard(food);
+                }
+            }
+
             return food;
         }
 
         internal void Cook(Order order)
         {
+            Console.WriteLine($"Kitchen: Preparing food, order: {order.ToString()}");
             IFood result = AddExtras(CreateMainFood(order.Food), order.Extras);
+            Console.WriteLine($"Kitchen: Food prepared, food: {result.ToString()}");
             order.NotifyReady(result);
         }
 
@@ -25,17 +41,6 @@ namespace Restaurant
                 return new HotDog();
 
             return new Chips();
-        }
-
-        IEnumerable<Extra> GetExtrasFromOrder(IFood mainFood, IEnumerable<string> extras)
-        {
-            foreach (string i in extras)
-            {
-                if (i == typeof(Ketchup).Name)
-                    yield return new Ketchup(mainFood);
-                else
-                    yield return new Mustard(mainFood);
-            }
         }
     }
 }

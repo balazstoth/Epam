@@ -10,14 +10,14 @@ namespace Restaurant
     {
         static void Main(string[] args)
         {
-            Client c1 = new Client("Berci", 200);
-            Client c2 = new Client("Peter", 100);
+            Client clien1 = new Client("Berci", 200);
+            Client client2 = new Client("Peter", 100);
 
-            Kitchen k1 = new Kitchen();
-            Waitress waitress = new Waitress(k1);
+            Kitchen kitchen = new Kitchen();
+            Waitress waitress = new Waitress(kitchen);
 
-            waitress.TakeOrder(c1, new Order("Chips", new List<string>() { "Mustard" }));
-            waitress.TakeOrder(c2, new Order("HotDog", new List<string>(){ "Ketchup" }));
+            waitress.TakeOrder(clien1, new Order("Chips", new List<string>() { "Mustard" }));
+            waitress.TakeOrder(client2, new Order("HotDog", new List<string>(){ "Ketchup" }));
             waitress.Start();
 
             Console.ReadKey();

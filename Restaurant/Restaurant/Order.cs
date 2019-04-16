@@ -14,7 +14,7 @@ namespace Restaurant
 
         public void NotifyReady(IFood food)
         {
-            Console.WriteLine("Order: Notifying observers of Order {0}", this.ToString());
+            Console.WriteLine("Order: Notifying observers of order {0}", this.ToString());
             FoodReady?.Invoke(new FoodReadyEventArgs(food));
             Console.WriteLine("Order: Notification done");
         }

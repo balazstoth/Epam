@@ -20,7 +20,7 @@ namespace Restaurant.Foods.Extra
 
         public override string ToString()
         {
-            return string.Format($"{typeof(Ketchup).Name}[food={this._food.ToString()}]");
+            return string.Format($"{nameof(Mustard)}[food={this._food.ToString()}]");
         }
     }
 }

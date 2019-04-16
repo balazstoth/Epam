@@ -11,7 +11,7 @@ namespace Restaurant.Foods
 
         public override string ToString()
         {
-            return typeof(HotDog).Name;
+            return nameof(HotDog);
         }
     }
 }

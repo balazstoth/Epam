@@ -23,7 +23,7 @@ namespace Restaurant
 
         public override string ToString()
         {
-            return string.Format("[name={0}, happiness={1}]",Name,Happiness.ToString("F2"));
+            return string.Format("[name={0}, happiness={1}]",Name,Happiness.ToString("F1"));
         }
     }
 }

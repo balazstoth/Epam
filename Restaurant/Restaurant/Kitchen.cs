@@ -14,16 +14,11 @@ namespace Restaurant
             foreach (string item in extras)
             {
                 if (item == typeof(Ketchup).Name)
-                {
                     food = new Ketchup(food);
-                }
 
                 if (item == typeof(Mustard).Name)
-                {
                     food = new Mustard(food);
-                }
             }
-
             return food;
         }
 

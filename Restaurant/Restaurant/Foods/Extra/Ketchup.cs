@@ -15,12 +15,12 @@ namespace Restaurant.Foods.Extra
 
         public override double CalculateHappiness(double happiness)
         {
-            return _food.CalculateHappiness(CalculateHappiness(happiness));
+            return _food.CalculateHappiness(_food.CalculateHappiness(happiness));
         }
 
         public override string ToString()
         {
-            return string.Format($"{typeof(Ketchup).Name}[food={this._food.ToString()}]");
+            return string.Format($"{nameof(Ketchup)}[food={this._food.ToString()}]");
         }
     }
 }

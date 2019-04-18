@@ -13,8 +13,7 @@ namespace RationalNumbers
             Console.WriteLine("R1 - R2: " + (r1 - r2));
             Console.WriteLine("R1 * R2: " + r1 * r2);
             Console.WriteLine("R1 / R2: " + r1 / r2);
-            Console.WriteLine("1/R1: " + !r1);
-
+            Console.WriteLine("-R1: " + -r1);
             Console.ReadKey();
         }
     }

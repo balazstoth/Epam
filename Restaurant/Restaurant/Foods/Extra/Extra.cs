@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Foods.Extra
 {
-    abstract class Extra : IFood
+    public abstract class Extra : IFood
     {
         protected IFood _food;
         public Extra(IFood food)

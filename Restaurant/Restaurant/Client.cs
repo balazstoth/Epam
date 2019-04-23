@@ -3,12 +3,15 @@ using System;
 
 namespace Restaurant
 {
-    class Client
+    public class Client
     {
         public double Happiness { get; set; }
         public string Name { get; }
         public Client(string name, double happiness)
         {
+            if (happiness < 0)
+                throw new ArgumentException(happiness.ToString());
+
             Name = name;
             Happiness = happiness;
         }

@@ -2,7 +2,7 @@
 
 namespace Restaurant.Foods
 {
-    class Chips : Food
+    public class Chips : Food
     {
         public override double CalculateHappiness(double happiness)
         {

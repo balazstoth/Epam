@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Restaurant.Foods.Extra
 {
-    class Ketchup : Extra
+    public class Ketchup : Extra
     {
         public Ketchup(IFood food)
             :base(food)

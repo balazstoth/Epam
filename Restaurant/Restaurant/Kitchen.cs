@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Restaurant
 {
-    class Kitchen
+    public class Kitchen
     {
         private IFood AddExtras(IFood mainFood, IEnumerable<string> extras)
         {

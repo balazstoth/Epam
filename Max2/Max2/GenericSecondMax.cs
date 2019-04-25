@@ -11,18 +11,18 @@ namespace Max2
             if (collection.Count() == 0)
                 throw new ArgumentException("Sequence contains no element");
 
-            T max, secondMax, first, second;
-            first = collection.ElementAt(0);
+            T max, secondMax;
+            max = collection.ElementAt(0);
             try
             {
-                second = !collection.ElementAt(1).Equals(first) ? collection.ElementAt(1) : collection.Where(x => !x.Equals(first)).First();
+                secondMax = !collection.ElementAt(1).Equals(max) ? collection.ElementAt(1) : collection.Where(x => !x.Equals(max)).First();
             }
             catch (Exception)
             {
                 throw new ArgumentException("Sequence contains only one element or all elements are equal in sequence");
             }
 
-            (max, secondMax) = first.CompareTo(second) == 1 ? (first, second) : (second, first);
+            (max, secondMax) = max.CompareTo(secondMax) == 1 ? (max, secondMax) : (secondMax, max);
 
             foreach (T item in collection)
             {
@@ -32,7 +32,7 @@ namespace Max2
                     max = item;
                 }
 
-                if (item.CompareTo(second) == 1 && !item.Equals(max))
+                if (item.CompareTo(secondMax) == 1 && !item.Equals(max))
                     secondMax = item;
             }
 

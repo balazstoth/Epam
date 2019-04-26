@@ -5,7 +5,7 @@ namespace TimeSlotEnumerator
 {
     public enum Direction { Left, Right, OnlyLeft, OnlyRight }
 
-    class TimeSlot<T> : IEnumerable<T>, ICollection<T>
+    class TimeSlot<T> : ICollection<T>
     {
         List<T> collection;
         int index;

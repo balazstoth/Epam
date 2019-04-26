@@ -27,7 +27,7 @@ namespace TimeSlotEnumerator
         {
             get
             {
-                return (currentIndex >= collection.Count || currentIndex < 0) ? default : collection[currentIndex];
+                return collection[currentIndex];
             }
         }
 
@@ -39,7 +39,6 @@ namespace TimeSlotEnumerator
 
         public bool MoveNext()
         {
-            int count = collection.Count;
             switch (direction)
             {
                 case Direction.Left:
@@ -56,7 +55,7 @@ namespace TimeSlotEnumerator
                     break;
 
                 case Direction.Right:
-                    if (currentIndex + step >= count)
+                    if (currentIndex + step >= collection.Count)
                     {
                         currentIndex--;
                         direction = Direction.OnlyLeft;
@@ -79,7 +78,7 @@ namespace TimeSlotEnumerator
                     break;
             }
 
-            if (currentIndex < 0 || currentIndex >= count || step == slotNumber + 1)
+            if (currentIndex < 0 || currentIndex >= collection.Count || step == slotNumber + 1)
                 return false;
 
             return true;

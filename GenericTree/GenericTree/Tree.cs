@@ -37,7 +37,7 @@ namespace GenericTree
         {
             Root.Display();
         }
-        public int Count { get { return Root.Count + 1; } }
+        public int Count { get { return Root.CountDescendants + 1; } }
 
         //public bool BreadthFirst(Node<T> node, bool isTopLevel = false)
         //{

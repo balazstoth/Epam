@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.IO;
+using System.Linq;
 
 namespace GenericTree
 {
@@ -10,10 +10,18 @@ namespace GenericTree
         internal List<Node<T>> children;
         private T value;
         protected int level;
-        public bool IsLastProperty { get { return Parent.LastChild(this); } }
 
+        public int CountDescendants
+        {
+            get
+            {
+                return Count + children.Sum(child => child.CountDescendants);
+            }
+        } 
+        public int Count => children.Count; //Just the count of child elements
+        public bool IsLastProperty { get { return Parent.LastChild(this); } }
         Node<T> Parent { get; set; }
-        public Node<T> this[int index] { get { return children[index]; } set { children[index] = value; } }
+        public Node<T> this[int index] { get => children[index]; set => children[index] = value; }
 
         public Node(Node<T> parent, T value)
         {
@@ -78,33 +86,12 @@ namespace GenericTree
             foreach (var child in children)
                 child.Display();
         }
-        public int ChildCount
-        {
-            get
-            {
-                int sum = 0;
-                foreach (var i in children)
-                    sum++;
-
-                return sum;
-            }
-        }
 
         #region ICollection implementation
-        public int Count
-        {
-            get
-            {
-                int sum = ChildCount;
-                foreach (var i in children)
-                    sum += i.Count;
-                return sum;
-            }
-        }
         public bool IsReadOnly => false;
         public IEnumerator<T> GetEnumerator()
         {
-            return new NodeEnumerator(this);
+            return children.Select(x => x.value).GetEnumerator();
         }
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -120,7 +107,7 @@ namespace GenericTree
         }
         public bool Contains(T item)
         {
-            return children.Find(x => x.value.Equals(item)) != null;
+            return children.Select(x => x.value.Equals(item)).Any();
         }
         public void CopyTo(T[] array, int arrayIndex)
         {
@@ -135,32 +122,5 @@ namespace GenericTree
             return this.value.Equals(other);
         }
         #endregion
-
-        class NodeEnumerator : IEnumerator<T>
-        {
-            private const int startIndex = -1;
-            private Node<T> container;
-            private int index;
-
-            public NodeEnumerator(Node<T> container)
-            {
-                this.container = container;
-                index = startIndex;
-            }
-
-            public T Current => container.children[index].value;
-            object IEnumerator.Current => this.Current;
-            public void Dispose()
-            {
-            }
-            public bool MoveNext()
-            {
-                return ++index < container.children.Count;
-            }
-            public void Reset()
-            {
-                index = startIndex;
-            }
-        }
     }
 }

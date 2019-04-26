@@ -7,7 +7,14 @@ namespace GenericTree
         static void Main(string[] args)
         {
             Tree<int> tree = new Tree<int>(10);
+            Add(tree);
 
+            tree.Display();
+            Console.ReadKey();
+        }
+
+        static void Add(Tree<int> tree)
+        {
             tree.Root.Add(21);
             tree.Root.Add(22);
             tree.Root.Add(23);
@@ -37,12 +44,6 @@ namespace GenericTree
             tree.Root[1][1][2].Add(56);
             tree.Root[1][1][2].Add(57);
             tree.Root[1][1][2].Add(58);
-            tree.Display();
-
-            Console.WriteLine(tree.Count);
-
-            
-            Console.ReadKey();
         }
     }
 }

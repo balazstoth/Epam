@@ -38,6 +38,9 @@ namespace GenericTree
             tree.Root[1][1][2].Add(57);
             tree.Root[1][1][2].Add(58);
             tree.Display();
+
+            Console.WriteLine(tree.Count);
+
             
             Console.ReadKey();
         }

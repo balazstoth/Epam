@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 namespace GenericTree
 {
     class Node<T> : ICollection<T>, IEquatable<T>
     {
-        private List<Node<T>> children;
+        internal List<Node<T>> children;
         private T value;
         protected int level;
         public bool IsLastProperty { get { return Parent.LastChild(this); } }
@@ -77,9 +78,29 @@ namespace GenericTree
             foreach (var child in children)
                 child.Display();
         }
-       
+        public int ChildCount
+        {
+            get
+            {
+                int sum = 0;
+                foreach (var i in children)
+                    sum++;
+
+                return sum;
+            }
+        }
+
         #region ICollection implementation
-        public int Count => children.Count;
+        public int Count
+        {
+            get
+            {
+                int sum = ChildCount;
+                foreach (var i in children)
+                    sum += i.Count;
+                return sum;
+            }
+        }
         public bool IsReadOnly => false;
         public IEnumerator<T> GetEnumerator()
         {

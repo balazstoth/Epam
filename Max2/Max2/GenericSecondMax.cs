@@ -13,15 +13,11 @@ namespace Max2
 
             T max, secondMax;
             max = collection.ElementAt(0);
-            try
-            {
-                secondMax = !collection.ElementAt(1).Equals(max) ? collection.ElementAt(1) : collection.Where(x => !x.Equals(max)).First();
-            }
-            catch (Exception)
-            {
-                throw new ArgumentException("Sequence contains only one element or all elements are equal in sequence");
-            }
 
+            if (collection.Count() < 2 || !collection.Where(x => !x.Equals(max)).Any())
+                throw new ArgumentException("Sequence contains only one element or all elements are equal in sequence");
+
+            secondMax = !collection.ElementAt(1).Equals(max) ? collection.ElementAt(1) : collection.Where(x => !x.Equals(max)).First();
             (max, secondMax) = max.CompareTo(secondMax) == 1 ? (max, secondMax) : (secondMax, max);
 
             foreach (T item in collection)

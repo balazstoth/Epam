@@ -8,16 +8,24 @@ namespace GenericTree
     {
         private List<Node<T>> children;
         private T value;
+        protected int level;
+        public bool IsLastProperty { get { return Parent.LastChild(this); } }
+
         Node<T> Parent { get; set; }
-        public Node<T> this[int index] { get { return children[index]; } }
+        public Node<T> this[int index] { get { return children[index]; } set { children[index] = value; } }
 
         public Node(Node<T> parent, T value)
         {
+            level = parent == null ? 0: parent.level + 1;
             this.value = value;
             Parent = parent;
             children = new List<Node<T>>();
         }
 
+        protected bool LastChild(Node<T> child)
+        {
+            return child == children[children.Count - 1];
+        }
         public override string ToString()
         {
             return value.ToString();
@@ -33,7 +41,6 @@ namespace GenericTree
 
             return false;
         }
-
         public bool ContainsRecursive(Func<T, bool> predicate)
         {
             if (predicate(value))
@@ -45,7 +52,32 @@ namespace GenericTree
 
             return false;
         }
+        public void Display()
+        {
+            bool isLast = Parent == null ? false : Parent.LastChild(this);
+            string currentLine = level > 0 ? "──" + value.ToString() : value.ToString();
 
+            if (level > 0)
+                if (isLast)
+                    currentLine = "└" + currentLine;
+                else
+                    currentLine = "│" + currentLine;
+
+            var p = Parent;
+            while (p != null && p.Parent != null)
+            {
+                if (p.IsLastProperty)
+                    currentLine = "   " + currentLine;
+                else
+                    currentLine = "│  " + currentLine;
+                p = p.Parent;
+            }
+
+            Console.WriteLine(currentLine);
+            foreach (var child in children)
+                child.Display();
+        }
+       
         #region ICollection implementation
         public int Count => children.Count;
         public bool IsReadOnly => false;
@@ -95,7 +127,6 @@ namespace GenericTree
                 index = startIndex;
             }
 
-            #region IEnumerable implementation
             public T Current => container.children[index].value;
             object IEnumerator.Current => this.Current;
             public void Dispose()
@@ -109,7 +140,6 @@ namespace GenericTree
             {
                 index = startIndex;
             }
-            #endregion
         }
     }
 }

@@ -33,5 +33,9 @@ namespace GenericTree
         {
             return Root.ToString();
         }
+        public void Display()
+        {
+            Root.Display();
+        }
     }
 }

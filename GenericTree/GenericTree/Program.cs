@@ -7,13 +7,16 @@ namespace GenericTree
         static void Main(string[] args)
         {
             Tree<int> tree = new Tree<int>(10);
-            Add(tree);
+            TreeProcess<int> processor = new TreeProcess<int>(tree);
 
-            tree.Display();
+            FillTree(tree);
+            processor.DisplayTree();
+            processor.BreatdhFirst(tree.Root, true);
+
             Console.ReadKey();
         }
 
-        static void Add(Tree<int> tree)
+        static void FillTree(Tree<int> tree)
         {
             tree.Root.Add(21);
             tree.Root.Add(22);

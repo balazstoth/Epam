@@ -8,9 +8,9 @@ namespace GenericTree
     class Node<T> : ICollection<T>, IEquatable<T>
     {
         internal List<Node<T>> children;
-        private T value;
+        public T value;
         protected int level;
-
+        public bool processed = false;
         public int CountDescendants
         {
             get

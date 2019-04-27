@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace GenericTree
 {
     class Tree<T> : IEnumerable<T>
     {
         public Node<T> Root { get; set; }
-
         public Tree(T initValue)
         {
             Root = new Node<T>(null, initValue);
@@ -33,30 +33,6 @@ namespace GenericTree
         {
             return Root.ToString();
         }
-        public void Display()
-        {
-            Root.Display();
-        }
         public int Count { get { return Root.CountDescendants + 1; } }
-
-        //public bool BreadthFirst(Node<T> node, bool isTopLevel = false)
-        //{
-        //    bool alreadyDisplayed = false;
-
-        //    if (alreadyDisplayed == false)
-        //    {
-        //        foreach (var i in node)
-        //            Console.WriteLine(i);
-        //        alreadyDisplayed = true;
-        //    }
-
-        //    if (!isTopLevel)
-        //        return false;
-        //    else
-        //    {
-        //        foreach (var i in node.children)
-        //            BreadthFirst(i);
-        //    }
-        //}
     }
 }

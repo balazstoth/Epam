@@ -28,10 +28,10 @@ namespace Employees
             };
 
             //Display the name of the employee who earn the most
-            var q1 = employees.OrderByDescending(e => e.Salary).First();
+            var q1 = employees.OrderByDescending(e => e.Salary).First().Name;
 
             //Display the name of the employees who earn less than the company average.
-            var q2 = employees.Select(e => e.Salary < employees.Average(s => s.Salary));
+            var q2 = employees.Where(e => e.Salary < employees.Average(s => s.Salary)).Select(e => e.Name);
 
             //Sort the employees by their salaries in an ascending order
             var q3 = employees.OrderBy(e => e.Salary);
@@ -40,25 +40,11 @@ namespace Employees
             var q4 = employees.Where(e => employees.Count(emp => emp.Salary == e.Salary) > 1).OrderBy(o => o.Salary).ThenBy(t => t.Name).Select(x => x.Name + " - " + x.Salary);
 
             //Group the employees in the following salary ranges: 200-399, 400-599, 600-799, 800-999
-            Dictionary<int, Tuple<int, int>> range = new Dictionary<int, Tuple<int, int>>()
-            {
-                { 1, new Tuple<int,int>(200, 399) },
-                { 2, new Tuple<int,int>(400, 599) },
-                { 3, new Tuple<int,int>(600, 799) },
-                { 4, new Tuple<int,int>(800, 999) }
-            };
+            int[] range = new int[] { 199, 399, 599, 799, 999 };
             var q5 = from employee in employees
-                       group employee by range.Where(d => employee.Salary >= d.Value.Item1 && employee.Salary <= d.Value.Item2).Select(x => new string[] { x.Value.Item1.ToString() + " - " + x.Value.Item2.ToString() }).First() into g
-                       orderby g.Key.First()
-                       select new { Range = g.Key.First(), Details = g.ToList() };
-
-            //Write Q5
-            //foreach (var item in q5)
-            //{
-            //    Console.WriteLine(item.Range);
-            //    foreach (var item2 in item.Details)
-            //        Console.WriteLine("Name: " + item2.Name + ", Salary: " + item2.Salary);
-            //}
+                       group employee by range.First(item => item > employee.Salary) into g
+                       orderby g.Key
+                       select new { Range = g.Key, Details = g.ToList() };
 
             Console.ReadKey();
         }

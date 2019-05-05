@@ -6,8 +6,6 @@ namespace Airports
 {
     class Airport
     {
-        private static int currentID = 1;
-
         public int Id { get; set; }
         public int CountryId { get; set; }
         public int CityId { get; set; }
@@ -17,9 +15,13 @@ namespace Airports
         public string Name { get; set; }
         public string TimeZoneName { get; set; }
 
-        public Airport(int countryID, int cityID, string IATA, string ICAO, string name, string timeZoneName)
+        public Airport()
         {
-            Id = currentID++;
+        }
+
+        public Airport(int id, int countryID, int cityID, string IATA, string ICAO, string name, string timeZoneName)
+        {
+            Id = id;
             CityId = cityID;
             IATACode = IATA;
             ICAOCode = ICAO;

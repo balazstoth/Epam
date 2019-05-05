@@ -1,5 +1,5 @@
 ﻿using System;
-using System.IO;
+
 
 namespace Airports
 {
@@ -9,8 +9,8 @@ namespace Airports
         {
             if (!FileCheck.FileExist())
             {
-                //Create Files
-                Transform.GetAirportsFromFile();
+                Transform tsfm = new Transform();
+                tsfm.StartTransform();
             }
 
             Console.ReadKey();

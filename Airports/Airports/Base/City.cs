@@ -13,10 +13,11 @@ namespace Airports
         public string Name { get; set; }
         public string TimeZoneName { get; set; }
 
-        public City(int cityID, string name, string timeZoneName)
+        public City(int countryID, string name, string timeZoneName)
         {
             Id = currentID++;
             Name = name;
+            CountryId = countryID;
         }
     }
 }

@@ -1,9 +1,11 @@
 ﻿using NLog;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using JSON = Newtonsoft.Json;
 
 namespace Airports
 {
@@ -11,17 +13,18 @@ namespace Airports
     {
         private static Logger logger = LogManager.GetCurrentClassLogger();
         private readonly string FilePath = "SourceFiles/airports.dat";
-        private readonly Regex pattern = new Regex("^[1-9][0-9]*?(,\"([A-Z]+\\s?[A-Z]+)+\"){3},\"[A-Z]{3}\",\"[A-Z]{4}\"(,-?[0-9]*\\.?[0-9]+){3}", RegexOptions.IgnoreCase);
+        //private readonly Regex pattern = new Regex("^[1-9][0-9]*?(,\"([A-Z]+\\s?[A-Z]+)+\"){3},\"[A-Z]{3}\",\"[A-Z]{4}\"(,-?[0-9]*\\.?[0-9]+){3}", RegexOptions.IgnoreCase);
+        private readonly Regex pattern = new Regex("^[1-9][0-9]*?(,\"([A-Z']+\\s?[A-Z']+)+\"){3},\"[A-Z']{3}\",\"[A-Z']{4}\"(,-?[0-9]*\\.?[0-9]+){3}", RegexOptions.IgnoreCase);
 
-        public List<City> Cities { get; set; }
-        public List<Country> Countries{ get; set; }
-        public List<Airport> Airports { get; set; }
+        public Dictionary<CityKey, City> Cities { get; set; }
+        public Dictionary<string, Country> Countries{ get; set; }
+        public Dictionary<AirportKey, Airport> Airports { get; set; }
 
         public Transform()
         {
-            Cities = new List<City>();
-            Countries = new List<Country>();
-            Airports = new List<Airport>();
+            Cities = new Dictionary<CityKey, City>();
+            Countries = new Dictionary<string, Country>();
+            Airports = new Dictionary<AirportKey, Airport>();
         }
 
         public void StartTransform()
@@ -35,28 +38,41 @@ namespace Airports
                 throw new FileNotFoundException(FilePath);
 
             int incorrectLinesCount = 0;
-            using (StreamReader sr = new StreamReader(FilePath))
+            string[] s = File.ReadAllLines(FilePath);
+            foreach (string currentLine in s)
             {
-                while (!sr.EndOfStream)
+                Console.WriteLine(currentLine);
+                if (IsMatch(currentLine))
                 {
-                    string currentLine = sr.ReadLine();
-                    if (!IsMatch(currentLine))
-                    {
-                        logger.Error(currentLine);
-                        incorrectLinesCount++;
-                    }
-                    else
-                    {
-                        var splitted = currentLine.Split(',');
-                        CreateInstances(splitted);
-                    }
+                    var splitted = currentLine.Replace("\"", string.Empty).Split(',');
+                    CreateInstances(splitted);
+                }
+                else
+                {
+                    logger.Error(currentLine);
+                    incorrectLinesCount++;
                 }
             }
             logger.Info($"There are {incorrectLinesCount} incorrect lines!");
         }
         private void CreateJSONFiles()
         {
-            throw new NotImplementedException();
+            JSON.JsonSerializer serializer = new JSON.JsonSerializer();
+
+            using (StreamWriter sw = new StreamWriter(new FileStream("Cities.JSON", FileMode.Create)))
+            {
+                serializer.Serialize(sw, Cities.ToArray());
+            }
+
+            using (StreamWriter sw = new StreamWriter(new FileStream("Countries.JSON", FileMode.Create)))
+            {
+                serializer.Serialize(sw, Countries.ToArray());
+            }
+
+            using (StreamWriter sw = new StreamWriter(new FileStream("Airports.JSON", FileMode.Create)))
+            {
+                serializer.Serialize(sw, Airports.ToArray());
+            }
         }
         private void CreateInstances(string[] splitted)
         {
@@ -66,24 +82,34 @@ namespace Airports
             string countryName = splitted[3];
             string IATA = splitted[4];
             string ICAO = splitted[5];
-            Location location = new Location(double.Parse(splitted[6]), double.Parse(splitted[7]), double.Parse(splitted[8]));
+            Location location = new Location(
+                double.Parse(splitted[6], CultureInfo.InvariantCulture),
+                double.Parse(splitted[7], CultureInfo.InvariantCulture),
+                double.Parse(splitted[8], CultureInfo.InvariantCulture));
 
-            var country = Countries.Where(c => c.Name.Equals(countryName)).FirstOrDefault();
-            if (country == null)
+            Country country;
+            if (!Countries.ContainsKey(countryName))
             {
                 country = new Country(countryName, "", "");
-                Countries.Add(country);
+                Countries[countryName] = country;
             }
+            else
+                country = Countries[countryName];
 
-            var city = Cities.Where(c => c.Name.Equals(cityName)).FirstOrDefault();
-            if (city == null)
+            City city;
+            CityKey cityKey = new CityKey() { CityName = cityName, CountryID = country.Id };
+            if (!Cities.ContainsKey(cityKey))
             {
                 city = new City(country.Id, cityName, "");
-                Cities.Add(city);
+                Cities[cityKey] = city;
             }
+            else
+                city = Cities[cityKey];
 
-            Airports.Add(new Airport()
+            AirportKey airportKey = new AirportKey() { AirportName = airportName, CityID = city.Id };
+            Airports.Add(airportKey, new Airport()
             {
+                Id = airportID,
                 CityId = city.Id,
                 CountryId = country.Id,
                 IATACode = IATA,

@@ -1,11 +1,12 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace Airports
 {
     public static class FileCheck
     {
-        private static string[] fileNames = new string[] { "Airports", "Cities", "Countries" };
+        private static string[] fileNames = new string[] { "Cities", "Countries", "Airports" };
         private static string extenstion = ".JSON";
 
         public static bool FileExist()

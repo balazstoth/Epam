@@ -12,7 +12,7 @@ namespace Airports
                 Transform tsfm = new Transform();
                 tsfm.StartTransform();
             }
-
+            Console.WriteLine("Ready");
             Console.ReadKey();
         }
     }

@@ -146,8 +146,9 @@ namespace Airports
                     country = new Country(countryName, "", "");
                 else
                 {
-                    RegionInfo rInfo = new RegionInfo(currentCulture.Name);
-                    country = new Country(countryName, rInfo.ThreeLetterISORegionName, rInfo.TwoLetterISORegionName);
+                    RegionInfo rInfo = null;
+                    try { rInfo = new RegionInfo(currentCulture.Name); } catch (Exception) { };
+                    country = new Country(countryName, rInfo?.ThreeLetterISORegionName, rInfo?.TwoLetterISORegionName);
                 }
                 Countries[countryName] = country;
             }

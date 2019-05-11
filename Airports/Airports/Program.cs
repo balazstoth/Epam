@@ -13,7 +13,8 @@ namespace Airports
 
             Handler jsonHander = new Handler();
 
-            Console.WriteLine("Ready!");
+            //Query1
+            Console.WriteLine(jsonHander.GetCountriesAndTheirAirports());
             Console.ReadKey();
         }
     }

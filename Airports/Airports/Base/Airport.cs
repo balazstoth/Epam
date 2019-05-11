@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Airports
 {
@@ -13,20 +11,22 @@ namespace Airports
         public string IATACode { get; set; }
         public string ICAOCode { get; set; }
         public string Name { get; set; }
-        public string TimeZoneName { get; set; }
+        public TimeZoneInfo timeZoneInfo { get; set; }
+        public string TimeZoneName { get { return timeZoneInfo?.DisplayName; } }
 
         public Airport()
         {
         }
 
-        public Airport(int id, int countryID, int cityID, string IATA, string ICAO, string name, string timeZoneName)
+        public Airport(int id, int countryID, int cityID, string IATA, string ICAO, string name, TimeZoneInfo zoneInfo)
         {
             Id = id;
+            CountryId = countryID;
             CityId = cityID;
             IATACode = IATA;
             ICAOCode = ICAO;
             Name = name;
-            TimeZoneName = timeZoneName;
+            timeZoneInfo = zoneInfo;
         }
     }
 }

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Airports
 {
@@ -11,13 +9,15 @@ namespace Airports
         public int CountryId { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
-        public string TimeZoneName { get; set; }
+        public string TimeZoneName { get { return TimeZoneInfo?.DisplayName; } }
+        public TimeZoneInfo TimeZoneInfo { get; }
 
-        public City(int countryID, string name, string timeZoneName)
+        public City(int countryID, string name, TimeZoneInfo timeZoneInfo)
         {
             Id = currentID++;
             Name = name;
             CountryId = countryID;
+            this.TimeZoneInfo = timeZoneInfo;
         }
     }
 }

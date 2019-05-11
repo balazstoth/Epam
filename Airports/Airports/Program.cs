@@ -1,5 +1,5 @@
-﻿using System;
-
+﻿using Serilog;
+using System;
 
 namespace Airports
 {
@@ -7,12 +7,13 @@ namespace Airports
     {
         static void Main(string[] args)
         {
-            if (!FileCheck.FileExist())
-            {
-                Transform tsfm = new Transform();
-                tsfm.StartTransform();
-            }
-            Console.WriteLine("Ready");
+            string path = @"Logs/InvalidLines.txt";
+            FileCheck.DeleteLogs(path);
+            Log.Logger = new LoggerConfiguration().WriteTo.File(path).CreateLogger();
+
+            Handler jsonHander = new Handler();
+
+            Console.WriteLine("Ready!");
             Console.ReadKey();
         }
     }

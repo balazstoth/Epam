@@ -1,0 +1,168 @@
+﻿using Newtonsoft.Json;
+using Serilog;
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.IO;
+using System.Linq;
+using System.Text.RegularExpressions;
+
+namespace Airports
+{
+    class Serializer
+    {
+        private readonly string timeZoneFilePath = "SourceFiles/timezoneinfo.json";
+        private readonly string airportFilePath = "SourceFiles/airports.dat";
+        private readonly Regex pattern = Pattern.FullPattern;
+        private Dictionary<int, string> TimeZones;
+
+        public Dictionary<CityKey, City> Cities { get; }
+        public Dictionary<string, Country> Countries { get; }
+        public Dictionary<AirportKey, Airport> Airports { get; }
+
+        public Serializer()
+        {
+            TimeZones = DeserializeTimeZones().ToDictionary(k => k.AirportId, v => v.TimeZoneInfoId);
+            Cities = new Dictionary<CityKey, City>();
+            Countries = new Dictionary<string, Country>();
+            Airports = new Dictionary<AirportKey, Airport>();
+            StartSerialize();
+        }
+
+        public void StartSerialize()
+        {
+            ReadFromFile();
+            CreateJSONFiles();
+        }
+        private void ReadFromFile()
+        {
+            if (!File.Exists(airportFilePath))
+                throw new FileNotFoundException(airportFilePath);
+
+            int incorrectLinesCount = 0;
+            string[] lines = File.ReadAllLines(airportFilePath);
+
+            foreach (string currentLine in lines)
+            {
+                if (IsMatch(currentLine))
+                {
+                    CreateInstances(currentLine.Replace("\"", "").Split(','));
+                }
+                else
+                {
+                    Log.Error("Not match: " + currentLine);
+                    incorrectLinesCount++;
+                }
+            }
+            Log.Information($"There are {incorrectLinesCount} incorrect lines!");
+        }
+        private void CreateJSONFiles()
+        {
+            JsonSerializer serializer = new JsonSerializer();
+
+            using (StreamWriter sw = new StreamWriter(new FileStream("Cities.JSON", FileMode.Create)))
+            using (JsonWriter jw = new JsonTextWriter(sw))
+            {
+                serializer.Formatting = Formatting.Indented;
+                serializer.Serialize(jw, Cities.Values.ToArray());
+            }
+
+            using (StreamWriter sw = new StreamWriter(new FileStream("Countries.JSON", FileMode.Create)))
+            using (JsonWriter jw = new JsonTextWriter(sw))
+            {
+                serializer.Formatting = Formatting.Indented;
+                serializer.Serialize(jw, Countries.Values.ToArray());
+            }
+
+            using (StreamWriter sw = new StreamWriter(new FileStream("Airports.JSON", FileMode.Create)))
+            using (JsonWriter jw = new JsonTextWriter(sw))
+            {
+                serializer.Formatting = Formatting.Indented;
+                serializer.Serialize(jw, Airports.Values.ToArray());
+            }
+        }
+        private void CreateInstances(string[] splitted)
+        {
+            int airportID = int.Parse(splitted[0]);
+            string airportName = splitted[1];
+            string cityName = splitted[2];
+            string countryName = splitted[3];
+            string IATA = splitted[4];
+            string ICAO = splitted[5];
+            Location location = new Location(
+                double.Parse(splitted[6], CultureInfo.InvariantCulture),
+                double.Parse(splitted[7], CultureInfo.InvariantCulture),
+                double.Parse(splitted[8], CultureInfo.InvariantCulture));
+
+            TimeZoneInfo zoneInfo = GetZoneInfo(airportID);
+            Country country = CreateCountry(countryName);
+            City city = CreateCity(cityName, country, zoneInfo);
+            CreateAirport(airportID, airportName, IATA, ICAO, country, city, zoneInfo);
+        }
+        private TimeZoneInfo GetZoneInfo(int airportID)
+        {
+            TimeZoneInfo info = null;
+            if (TimeZones.ContainsKey(airportID))
+                info = TimeZoneInfo.FindSystemTimeZoneById(TimeZones[airportID]);
+
+            return info;
+        }
+        private void CreateAirport(int airportID, string airportName, string IATA, string ICAO, Country country, City city, TimeZoneInfo zoneInfo)
+        {
+            AirportKey airportKey = new AirportKey() { AirportName = airportName, CityID = city.Id };
+            Airports.Add(airportKey, new Airport()
+            {
+                Id = airportID,
+                CityId = city.Id,
+                CountryId = country.Id,
+                IATACode = IATA,
+                ICAOCode = ICAO,
+                Name = airportName,
+                timeZoneInfo = zoneInfo
+            });
+        }
+        private City CreateCity(string cityName, Country country, TimeZoneInfo timeZone)
+        {
+            City city;
+            CityKey cityKey = new CityKey() { CityName = cityName, CountryID = country.Id };
+            if (!Cities.ContainsKey(cityKey))
+            {
+                city = new City(country.Id, cityName, timeZone);
+                Cities[cityKey] = city;
+            }
+            else
+                city = Cities[cityKey];
+            return city;
+        }
+        private Country CreateCountry(string countryName)
+        {
+            Country country;
+            if (!Countries.ContainsKey(countryName))
+            {
+                var currentCulture = CultureInfo.GetCultures(CultureTypes.AllCultures)
+                                                .Where(c => c.EnglishName.ToLower().Contains(countryName.ToLower()))
+                                                .FirstOrDefault();
+                if (currentCulture == null)
+                    country = new Country(countryName, "", "");
+                else
+                {
+                    RegionInfo rInfo = new RegionInfo(currentCulture.Name);
+                    country = new Country(countryName, rInfo.ThreeLetterISORegionName, rInfo.TwoLetterISORegionName);
+                }
+                Countries[countryName] = country;
+            }
+            else
+                country = Countries[countryName];
+            return country;
+        }
+        private bool IsMatch(string text)
+        {
+            return pattern.IsMatch(text);
+        }
+        private ZoneInfoPairs[] DeserializeTimeZones()
+        {
+            using (StreamReader sr = new StreamReader(timeZoneFilePath))
+                return JsonConvert.DeserializeObject<ZoneInfoPairs[]>(sr.ReadToEnd());
+        }
+    }
+}

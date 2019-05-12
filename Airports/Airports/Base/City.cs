@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 
 namespace Airports
 {
@@ -6,18 +7,24 @@ namespace Airports
     {
         private static int currentID = 1;
 
+        public string TimeZoneId { get; }
         public int CountryId { get; set; }
         public int Id { get; set; }
         public string Name { get; set; }
+
+        [JsonIgnore]
         public string TimeZoneName { get { return TimeZoneInfo?.DisplayName; } }
+
+        [JsonIgnore]
         public TimeZoneInfo TimeZoneInfo { get; }
 
-        public City(int countryID, string name, TimeZoneInfo timeZoneInfo)
+        public City(int countryID, string name, string timeZoneId)
         {
             Id = currentID++;
             Name = name;
             CountryId = countryID;
-            this.TimeZoneInfo = timeZoneInfo;
+            TimeZoneId = timeZoneId;
+            this.TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         }
     }
 }

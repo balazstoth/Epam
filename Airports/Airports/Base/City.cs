@@ -26,5 +26,15 @@ namespace Airports
             TimeZoneId = timeZoneId;
             this.TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public static void ResetStaticID()
+        {
+            City.currentID = 1;
+        }
     }
 }

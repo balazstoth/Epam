@@ -17,5 +17,15 @@
             ThreeLetterISOCode = threeLetterCode;
             TwoLetterISOCode = twoLetterCode;
         }
+
+        public override string ToString()
+        {
+            return Name;
+        }
+
+        public static void ResetStaticID()
+        {
+            Country.currentID = 1;
+        }
     }
 }

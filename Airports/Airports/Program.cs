@@ -12,7 +12,15 @@ namespace Airports
             Log.Logger = new LoggerConfiguration().WriteTo.File(path).CreateLogger();
             Handler jsonHander = new Handler();
 
-            Console.WriteLine("Ready");
+            //Q1
+            Console.WriteLine("Number of airports per countries:");
+            Console.WriteLine(jsonHander.GetCountriesAndTheirAirportsCount());
+            Console.WriteLine("");
+
+            //Q2
+            Console.WriteLine("Which cities have the most airports:");
+            Console.WriteLine(jsonHander.GetWhichCityHasMostAirPorts());
+
             Console.ReadKey();
         }
     }

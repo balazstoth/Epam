@@ -38,5 +38,10 @@ namespace Airports
             TimeZoneId = zoneInfoId;
             timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
         }
+
+        public override string ToString()
+        {
+            return FullName;
+        }
     }
 }

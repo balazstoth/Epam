@@ -13,6 +13,7 @@ namespace Airports
                 string result = File.ReadAllText(FileCheck.GetFileName(0));
                 cities = JsonConvert.DeserializeObject<City[]>(result);
             }
+            City.ResetStaticID();
             return cities;
         }
         public Country[] DeserializeCountries()
@@ -23,6 +24,7 @@ namespace Airports
                 string result = File.ReadAllText(FileCheck.GetFileName(1));
                 countries = JsonConvert.DeserializeObject<Country[]>(result);
             }
+            Country.ResetStaticID();
             return countries;
         }
         public Airport[] DeserializeAirports()

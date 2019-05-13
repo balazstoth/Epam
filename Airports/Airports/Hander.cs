@@ -44,32 +44,32 @@ namespace Airports
             }
         }
 
-        //Queries - Need to fix
+        //Queries
         public string GetCountriesAndTheirAirportsCount()
         {
-            var q1 = Countries
-                .Join(Cities, country => country.Value.Id, city => city.Value.CountryId, (country, city) => new { country, city })
-                .Join(Airports, CCpair => CCpair.city.Value.Id, airport => airport.Value.CityId, (CCpair, airport) => new { Airport = airport, CCP = CCpair });
+            var airportCountryPairs = Countries
+                        .Join(Cities, country => country.Value.Id, city => city.Value.CountryId, (country, city) => new { country, city })
+                        .Join(Airports, CCpair => CCpair.city.Value.Id, airport => airport.Value.CityId, (CCpair, airport) => new { Airport = airport, CCP = CCpair });
 
-            var q2 = from x in q1
-                     group x by x.CCP.country.Value.Name into g
+            var CountPerCountries = from pairs in airportCountryPairs
+                     group pairs by pairs.CCP.country.Value.Name into g
                      orderby g.Key
-                     select new { Country = g.Key, Count = g.Count() };
+                     select new { Country = g.Key, Count = g.Count(), Lenght = g.Key.Length };
 
-            return string.Join(Environment.NewLine, q2.Select(x => x.Country + " - " + x.Count));
+            int maxCharacterCount = CountPerCountries.Max(x => x.Lenght);
+            return string.Join(Environment.NewLine, CountPerCountries.Select(x => x.Country.PadRight(maxCharacterCount) + " - " + x.Count));
         }
-        public void GetWhichCityHasMostAirPorts()
+        public string GetWhichCityHasMostAirPorts()
         {
-            var q1 = Airports.Join(Cities, airport => airport.Value.CityId, city => city.Value.Id, (airport, city) => new { Airport = airport, City = city });
-            var q2 = from pair in q1
-                     group pair by pair.City into g
-                     select new { City = g.Key, Count = g.Count() };
+            var pairs = from pair in Airports.Join(Cities,
+                                                    airport => airport.Value.CityId,
+                                                    city => city.Value.Id,
+                                                    (airport, city) => new { Airport = airport, City = city })
+                        group pair by pair.City into g
+                        select new { Name = g.Key, Value = g, Count = g.Count() };
 
-            foreach (var item in q2.OrderByDescending(x => x.Count))
-            {
-                Console.WriteLine(item.City.Value.Name + " - " + item.Count);
-            }
-
+            int max = pairs.Max(p => p.Count);
+            return string.Join(Environment.NewLine, pairs.Where(p => p.Count == max).Select(p => p.Value.Key.Value.Name + " - " + p.Count));
         }
     }
 }

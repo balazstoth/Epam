@@ -2,6 +2,7 @@
 using Elect.Location.Models;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 
@@ -86,6 +87,19 @@ namespace Airports
                     }).OrderBy(p => p.Distance).Take(1).Select(p => $"{p.AirportName} in {p.CityName}");
 
             return string.Join(Environment.NewLine, result);
+        }
+        public string GetAirportFromIATA(string code)
+        {
+            var airport = Airports.FirstOrDefault(a => a.Value.IATACode == code.ToUpper());
+
+            if (airport.Value == null)
+                throw new ArgumentException(code);
+
+            var city = Cities.FirstOrDefault(c => c.Value.Id == airport.Value.CityId);
+            var country = Countries.FirstOrDefault(c => c.Value.Id == city.Value.CountryId);
+            var localtime = TimeZoneInfo.ConvertTime(DateTime.Now, airport.Value.timeZoneInfo);
+            var offset = DateTimeOffset.
+            return $"{airport.Value.Name} - {city.Value.Name}, {country.Value.Name} - Local time: {localtime} ({})";
         }
     }
 }

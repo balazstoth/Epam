@@ -45,5 +45,15 @@ namespace Airports
             CoordinateModel originalCoordinate = new CoordinateModel(double.Parse(splitted[0]), double.Parse(splitted[1]));
             return handler.GetClosestAirport(originalCoordinate);
         }
+        static string GetAirportFromIATA(Handler handler)
+        {
+            Console.WriteLine("Enter an IATA code:");
+            string code = Console.ReadLine();
+
+            if (!Pattern.IATAPattern.IsMatch(code))
+                throw new ArgumentException(code);
+
+            return handler.GetAirportFromIATA(code);
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Serilog;
 using System;
+using Elect.Location.Models;
 
 namespace Airports
 {
@@ -20,8 +21,29 @@ namespace Airports
             //Q2
             Console.WriteLine("Which cities have the most airports:");
             Console.WriteLine(jsonHander.GetWhichCityHasMostAirPorts());
+            Console.WriteLine("");
+
+            //Q3
+            Console.WriteLine("Which one is the closest airport:");
+            Console.WriteLine(GetClosestAirport(jsonHander));
+            Console.WriteLine("");
 
             Console.ReadKey();
+        }
+
+        static string GetClosestAirport(Handler handler)
+        {
+            Console.WriteLine("Enter the coordinates of your location: (Longitude, Latitude)");
+            string location = Console.ReadLine();
+
+            if (!Pattern.LocationPattern.IsMatch(location))
+                throw new ArgumentException(location);
+
+            // Epam: 47.48882, 19.08004
+
+            var splitted = location.Split(",");
+            CoordinateModel originalCoordinate = new CoordinateModel(double.Parse(splitted[0]), double.Parse(splitted[1]));
+            return handler.GetClosestAirport(originalCoordinate);
         }
     }
 }

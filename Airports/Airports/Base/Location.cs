@@ -6,7 +6,7 @@
         public double Latitude { get; set; }
         public double Longitude { get; set; }
 
-        public Location(double alt, double lat, double lon)
+        public Location(double lon, double lat, double alt)
         {
             Altitude = alt;
             Latitude = lat;

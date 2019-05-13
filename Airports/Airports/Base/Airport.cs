@@ -12,6 +12,7 @@ namespace Airports
         public string ICAOCode { get; set; }
         public string Name { get; set; }
         public string TimeZoneId { get; set; }
+        public Location Location { get; set; }
 
         [JsonIgnore]
         public string FullName => Name + " Airport";
@@ -27,7 +28,7 @@ namespace Airports
         {
         }
 
-        public Airport(int id, int countryID, int cityID, string IATA, string ICAO, string name, string zoneInfoId)
+        public Airport(int id, int countryID, int cityID, string IATA, string ICAO, string name, string zoneInfoId, Location location)
         {
             Id = id;
             CountryId = countryID;
@@ -37,6 +38,7 @@ namespace Airports
             Name = name;
             TimeZoneId = zoneInfoId;
             timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
+            this.Location = location;
         }
 
         public override string ToString()

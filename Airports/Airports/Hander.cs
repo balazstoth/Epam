@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Elect.Location.Coordinate.DistanceUtils;
+using Elect.Location.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -11,7 +13,7 @@ namespace Airports
         private Deserializer deserializer;
 
         public Dictionary<CityKey, City> Cities { get; set; }
-        public Dictionary<string, Country> Countries{ get; set; }
+        public Dictionary<string, Country> Countries { get; set; }
         public Dictionary<AirportKey, Airport> Airports { get; set; }
 
         public Handler()
@@ -19,7 +21,7 @@ namespace Airports
             if (!FileCheck.SourceFilesExist())
                 throw new FileNotFoundException();
 
-            if(!FileCheck.JsonFilesExist())
+            if (!FileCheck.JsonFilesExist())
                 serializer = new Serializer();
 
             deserializer = new Deserializer();
@@ -32,7 +34,7 @@ namespace Airports
             {
                 Cities = deserializer.DeserializeCities()
                             .ToDictionary(
-                                k => new CityKey() { CountryID = k.CountryId, CityName = k.Name}, 
+                                k => new CityKey() { CountryID = k.CountryId, CityName = k.Name },
                                 v => new City(v.CountryId, v.Name, v.TimeZoneId));
 
                 Countries = deserializer.DeserializeCountries().ToDictionary(k => k.Name);
@@ -40,7 +42,7 @@ namespace Airports
                 Airports = deserializer.DeserializeAirports()
                             .ToDictionary(
                                 k => new AirportKey() { AirportName = k.Name, CityID = k.CityId },
-                                v => new Airport(v.Id, v.CountryId, v.CityId, v.IATACode, v.ICAOCode, v.Name, v.TimeZoneId));
+                                v => new Airport(v.Id, v.CountryId, v.CityId, v.IATACode, v.ICAOCode, v.Name, v.TimeZoneId, v.Location));
             }
         }
 
@@ -52,9 +54,9 @@ namespace Airports
                         .Join(Airports, CCpair => CCpair.city.Value.Id, airport => airport.Value.CityId, (CCpair, airport) => new { Airport = airport, CCP = CCpair });
 
             var CountPerCountries = from pairs in airportCountryPairs
-                     group pairs by pairs.CCP.country.Value.Name into g
-                     orderby g.Key
-                     select new { Country = g.Key, Count = g.Count(), Lenght = g.Key.Length };
+                                    group pairs by pairs.CCP.country.Value.Name into g
+                                    orderby g.Key
+                                    select new { Country = g.Key, Count = g.Count(), Lenght = g.Key.Length };
 
             int maxCharacterCount = CountPerCountries.Max(x => x.Lenght);
             return string.Join(Environment.NewLine, CountPerCountries.Select(x => x.Country.PadRight(maxCharacterCount) + " - " + x.Count));
@@ -70,6 +72,20 @@ namespace Airports
 
             int max = pairs.Max(p => p.Count);
             return string.Join(Environment.NewLine, pairs.Where(p => p.Count == max).Select(p => p.Value.Key.Value.Name + " - " + p.Count));
+        }
+        public string GetClosestAirport(CoordinateModel original)
+        {
+            var result = Airports
+                .Join(Cities, a => a.Value.CityId, c => c.Value.Id, (a, c) => new { Airport = a, City = c })
+                .Select(
+                    pair => new
+                    {
+                        Distance = DistanceHelper.GetDistanceByGeo(original, new CoordinateModel(pair.Airport.Value.Location.Longitude, pair.Airport.Value.Location.Latitude), UnitOfLengthModel.Kilometer),
+                        AirportName = pair.Airport.Value.FullName,
+                        CityName = pair.City.Value.Name
+                    }).OrderBy(p => p.Distance).Take(1).Select(p => $"{p.AirportName} in {p.CityName}");
+
+            return string.Join(Environment.NewLine, result);
         }
     }
 }

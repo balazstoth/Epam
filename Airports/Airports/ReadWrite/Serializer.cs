@@ -100,7 +100,7 @@ namespace Airports
             string zoneInfoId = GetZoneInfo(airportID);
             Country country = CreateCountry(countryName);
             City city = CreateCity(cityName, country, zoneInfoId);
-            CreateAirport(airportID, airportName, IATA, ICAO, country, city, zoneInfoId);
+            CreateAirport(airportID, airportName, IATA, ICAO, country, city, zoneInfoId, location);
         }
         private string GetZoneInfo(int airportID)
         {
@@ -108,11 +108,11 @@ namespace Airports
                 return TimeZones[airportID];
             return string.Empty;
         }
-        private void CreateAirport(int airportID, string airportName, string IATA, string ICAO, Country country, City city, string zoneInfo)
+        private void CreateAirport(int airportID, string airportName, string IATA, string ICAO, Country country, City city, string zoneInfo, Location location)
         {
             AirportKey airportKey = new AirportKey() { AirportName = airportName, CityID = city.Id };
             if (!Airports.ContainsKey(airportKey))
-                Airports.Add(airportKey, new Airport(airportID, country.Id, city.Id, IATA, ICAO, airportName, zoneInfo));
+                Airports.Add(airportKey, new Airport(airportID, country.Id, city.Id, IATA, ICAO, airportName, zoneInfo, location));
         }
         private City CreateCity(string cityName, Country country, string timeZone)
         {

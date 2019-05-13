@@ -98,8 +98,8 @@ namespace Airports
             var city = Cities.FirstOrDefault(c => c.Value.Id == airport.Value.CityId);
             var country = Countries.FirstOrDefault(c => c.Value.Id == city.Value.CountryId);
             var localtime = TimeZoneInfo.ConvertTime(DateTime.Now, airport.Value.timeZoneInfo);
-            var offset = DateTimeOffset.
-            return $"{airport.Value.Name} - {city.Value.Name}, {country.Value.Name} - Local time: {localtime} ({})";
+            var offset = airport.Value.timeZoneInfo.BaseUtcOffset;
+            return $"{airport.Value.Name} - {city.Value.Name}, {country.Value.Name} - Local time: {localtime} ({offset})";
         }
     }
 }

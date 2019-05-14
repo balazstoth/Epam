@@ -15,7 +15,7 @@ namespace Airports
         public Location Location { get; set; }
 
         [JsonIgnore]
-        public string FullName => Name + " Airport";
+        public string FullName => Name.ToLower().Contains("airport") ? Name : Name + " Airport";
 
         [JsonIgnore]
         public TimeZoneInfo timeZoneInfo { get; }
@@ -37,8 +37,8 @@ namespace Airports
             ICAOCode = ICAO;
             Name = name;
             TimeZoneId = zoneInfoId;
+            Location = location;
             timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
-            this.Location = location;
         }
 
         public override string ToString()

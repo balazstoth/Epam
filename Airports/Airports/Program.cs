@@ -28,6 +28,8 @@ namespace Airports
             Console.WriteLine(GetClosestAirport(jsonHander));
             Console.WriteLine("");
 
+            //Q4
+            Console.WriteLine(GetAirportFromIATA(jsonHander));
             Console.ReadKey();
         }
 
@@ -48,7 +50,7 @@ namespace Airports
         static string GetAirportFromIATA(Handler handler)
         {
             Console.WriteLine("Enter an IATA code:");
-            string code = Console.ReadLine();
+            string code = Console.ReadLine().ToUpper();
 
             if (!Pattern.IATAPattern.IsMatch(code))
                 throw new ArgumentException(code);

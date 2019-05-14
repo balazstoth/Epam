@@ -1,6 +1,6 @@
 ﻿namespace Airports
 {
-    class ZoneInfoPairs
+    struct ZoneInfoPairs
     {
         public int AirportId { get; set; }
         public string TimeZoneInfoId { get; set; }

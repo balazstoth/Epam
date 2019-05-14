@@ -29,6 +29,7 @@ namespace Airports
             Console.WriteLine("");
 
             //Q4
+            Console.WriteLine("Get airport from IATA code:");
             Console.WriteLine(GetAirportFromIATA(jsonHander));
             Console.ReadKey();
         }

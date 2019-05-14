@@ -8,9 +8,9 @@ namespace Airports
         private Stopwatch sw;
         private string processName;
 
-        public Timer(string processName)
+        public Timer(string processname)
         {
-            this.processName = processName;
+            processName = processname;
             sw = new Stopwatch();
             sw.Start();
         }

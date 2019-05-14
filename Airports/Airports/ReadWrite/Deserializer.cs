@@ -7,21 +7,21 @@ namespace Airports
     {
         public City[] DeserializeCities()
         {
-            string result = File.ReadAllText(FileCheck.GetFileName(0));
+            string result = File.ReadAllText(FileCheck.GetJsonFileName(0));
             City[] cities = JsonConvert.DeserializeObject<City[]>(result);
             City.ResetStaticID();
             return cities;
         }
         public Country[] DeserializeCountries()
         {
-            string result = File.ReadAllText(FileCheck.GetFileName(1));
+            string result = File.ReadAllText(FileCheck.GetJsonFileName(1));
             Country[] countries = JsonConvert.DeserializeObject<Country[]>(result);
             Country.ResetStaticID();
             return countries;
         }
         public Airport[] DeserializeAirports()
         {
-            string result = File.ReadAllText(FileCheck.GetFileName(2));
+            string result = File.ReadAllText(FileCheck.GetJsonFileName(2));
             Airport[] airports = JsonConvert.DeserializeObject<Airport[]>(result);
             return airports;
         }

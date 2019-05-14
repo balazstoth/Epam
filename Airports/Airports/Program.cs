@@ -15,12 +15,12 @@ namespace Airports
 
             //Q1
             Console.WriteLine("Number of airports per countries:");
-            Console.WriteLine(jsonHander.GetCountriesAndTheirAirportsCount());
+            Console.WriteLine(GetCountriesAndTheirAirportsCount(jsonHander));
             Console.WriteLine("");
 
             //Q2
             Console.WriteLine("Which cities have the most airports:");
-            Console.WriteLine(jsonHander.GetWhichCityHasMostAirPorts());
+            Console.WriteLine(GetWhichCityHasMostAirPorts(jsonHander));
             Console.WriteLine("");
 
             //Q3
@@ -34,29 +34,40 @@ namespace Airports
             Console.ReadKey();
         }
 
+
+        static string GetCountriesAndTheirAirportsCount(Handler handler)
+        {
+            return handler.CallGetCountriesAndTheirAirportsCount();
+        }
+        static string GetWhichCityHasMostAirPorts(Handler handler)
+        {
+            return handler.CallGetWhichCityHasMostAirPorts();
+        }
         static string GetClosestAirport(Handler handler)
         {
-            Console.WriteLine("Enter the coordinates of your location: (Longitude, Latitude)");
-            string location = Console.ReadLine();
-
-            if (!Pattern.LocationPattern.IsMatch(location))
-                throw new ArgumentException(location);
-
-            // Epam: 47.48882, 19.08004
-
-            var splitted = location.Split(",");
-            CoordinateModel originalCoordinate = new CoordinateModel(double.Parse(splitted[0]), double.Parse(splitted[1]));
-            return handler.GetClosestAirport(originalCoordinate);
+            string result = string.Empty;
+            try
+            {
+                result = handler.CallGetClosesAirport();
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Error(string.Format(Properties.Resources.Exception_argument_InvalidArgument,ex.Message));
+            }
+            return result;
         }
         static string GetAirportFromIATA(Handler handler)
         {
-            Console.WriteLine("Enter an IATA code:");
-            string code = Console.ReadLine().ToUpper();
-
-            if (!Pattern.IATAPattern.IsMatch(code))
-                throw new ArgumentException(code);
-
-            return handler.GetAirportFromIATA(code);
+            string result = string.Empty;
+            try
+            {
+                result = handler.CallGetAirportFromIATA();
+            }
+            catch (ArgumentException ex)
+            {
+                Log.Error(string.Format(Properties.Resources.Exception_argument_InvalidArgument, ex.Message));
+            }
+            return result;
         }
     }
 }

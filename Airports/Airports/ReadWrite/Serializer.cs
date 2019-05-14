@@ -11,8 +11,8 @@ namespace Airports
 {
     class Serializer
     {
-        private readonly string timeZoneFilePath = "SourceFiles/timezoneinfo.json";
-        private readonly string airportFilePath = "SourceFiles/airports.dat";
+        private readonly string timeZoneFilePath = FileCheck.GetSourceFilePath(1);
+        private readonly string airportFilePath = FileCheck.GetSourceFilePath(0);
         private readonly Regex pattern = Pattern.FullPattern;
         private Dictionary<int, string> TimeZones;
 
@@ -22,6 +22,9 @@ namespace Airports
 
         public Serializer()
         {
+            if (!FileCheck.SourceFilesExist())
+                throw new FileNotFoundException(string.Join(" / ", FileCheck.SourcefileNames));
+
             TimeZones = DeserializeTimeZones().ToDictionary(k => k.AirportId, v => v.TimeZoneInfoId);
             Cities = new Dictionary<CityKey, City>();
             Countries = new Dictionary<string, Country>();
@@ -39,9 +42,6 @@ namespace Airports
         }
         private void ReadFromFile()
         {
-            if (!File.Exists(airportFilePath))
-                throw new FileNotFoundException(airportFilePath);
-
             int incorrectLinesCount = 0;
             string[] lines = File.ReadAllLines(airportFilePath);
 
@@ -134,16 +134,28 @@ namespace Airports
             Country country;
             if (!Countries.ContainsKey(countryName))
             {
+                RegionInfo rInfo = null;
                 var currentCulture = CultureInfo.GetCultures(CultureTypes.AllCultures)
                                                 .Where(c => c.EnglishName.ToLower().Contains(countryName.ToLower()))
                                                 .FirstOrDefault();
                 if (currentCulture == null)
+                {
+                    Log.Error(string.Format(Properties.Resources.Exception_Culture_NullCulture, countryName));
                     country = new Country(countryName, "", "");
+                }
                 else
                 {
-                    RegionInfo rInfo = null;
-                    try { rInfo = new RegionInfo(currentCulture.Name); } catch (Exception) { };
-                    country = new Country(countryName, rInfo?.ThreeLetterISORegionName, rInfo?.TwoLetterISORegionName);
+                    try
+                    {
+                        rInfo = new RegionInfo(currentCulture.Name);
+                    }
+                    catch (ArgumentException)
+                    {
+                        Log.Error(string.Format(Properties.Resources.Exception_Culture_InvalidCulture, currentCulture.Name));
+                    }
+                    country = new Country(countryName, 
+                                            rInfo == null ? "" : rInfo.ThreeLetterISORegionName,
+                                            rInfo == null ? "" : rInfo.TwoLetterISORegionName);
                 }
                 Countries[countryName] = country;
             }

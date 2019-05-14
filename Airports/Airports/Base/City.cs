@@ -24,14 +24,13 @@ namespace Airports
             Name = name;
             CountryId = countryID;
             TimeZoneId = timeZoneId;
-            this.TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         }
 
         public override string ToString()
         {
             return Name;
         }
-
         public static void ResetStaticID()
         {
             City.currentID = 1;

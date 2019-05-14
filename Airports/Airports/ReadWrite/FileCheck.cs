@@ -5,7 +5,7 @@ namespace Airports
 {
     public static class FileCheck
     {
-        private static string[] sourcefileNames = new string[] { "airports.dat", "timezoneinfo.json" };
+        public static string[] SourcefileNames { get; } = new string[] { "airports.dat", "timezoneinfo.json" };
         private static string path = @"SourceFiles/";
         private static string[] jsonfileNames = new string[] { "Cities", "Countries", "Airports" };
         private static string extenstion = ".json";
@@ -16,16 +16,20 @@ namespace Airports
         }
         public static bool SourceFilesExist()
         {
-            return sourcefileNames.All(file => File.Exists(Path.Combine(path,file)));
+            return SourcefileNames.All(file => File.Exists(Path.Combine(path,file)));
         }
         public static void DeleteLogs(string path)
         {
             if (File.Exists(path))
                 File.Delete(path);
         }
-        public static string GetFileName(int index)
+        public static string GetJsonFileName(int index)
         {
             return jsonfileNames[index] + extenstion; 
+        }
+        public static string GetSourceFilePath(int index)
+        {
+            return Path.Combine(path, SourcefileNames[index]);
         }
     }
 }

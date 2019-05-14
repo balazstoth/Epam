@@ -23,20 +23,15 @@ namespace Airports
         [JsonIgnore]
         public string TimeZoneName { get { return timeZoneInfo?.DisplayName; } }
 
-
-        public Airport()
-        {
-        }
-
-        public Airport(int id, int countryID, int cityID, string IATA, string ICAO, string name, string zoneInfoId, Location location)
+        public Airport(int id, int countryID, int cityID, string IATACode, string ICAOCode, string name, string timeZoneId, Location location)
         {
             Id = id;
             CountryId = countryID;
             CityId = cityID;
-            IATACode = IATA;
-            ICAOCode = ICAO;
+            this.IATACode = IATACode;
+            this.ICAOCode = ICAOCode;
             Name = name;
-            TimeZoneId = zoneInfoId;
+            TimeZoneId = timeZoneId;
             Location = location;
             timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
         }

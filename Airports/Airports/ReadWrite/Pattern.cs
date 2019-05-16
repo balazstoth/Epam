@@ -4,11 +4,17 @@ namespace Airports
 {
     static class Pattern
     {
-        //Full regex check
-        internal static readonly Regex FullPattern = new Regex("^[1-9][0-9]*,(\"[A-Z'\\.][A-Z'\\s\\.]+[A-Z'\\.]\",){3}\"[A-Z]{3}\",\"[A-Z]{4}\"(,-?[0-9]*\\.?[0-9]+){3}", RegexOptions.IgnoreCase);
-        
-        //Ignore the city, country and airport name
-        internal static readonly Regex ReducedPattern = new Regex("^[1-9][0-9]*,(\"[^,]+\",){3}\"[A-Z]{3}\",\"[A-Z]{4}\"(,-?[0-9]*\\.?[0-9]+){3}", RegexOptions.IgnoreCase);
+        private static string pattern = "^(?<Id>[1-9][0-9]*)," + 
+                                      "\"(?<Airport>[^,]+)\"," + 
+                                      "\"(?<City>[^,]+)\"," +
+                                      "\"(?<Country>[^,]+)\"," +
+                                      "\"(?<IATA>[A-Z]{3})\"," +
+                                      "\"(?<ICAO>[A-Z]{4})\"" +
+                                      ",(?<Long>-?[0-9]*\\.?[0-9]+)" +
+                                      ",(?<Lat>-?[0-9]*\\.?[0-9]+)" +
+                                      ",(?<Alt>[0-9]*\\.?[0-9]+)";
+
+        internal static readonly Regex Regex = new Regex(pattern, RegexOptions.IgnoreCase);
         internal static readonly Regex LocationPattern = new Regex("^-?[0-9]*\\.?[0-9]+,-?[0-9]*\\.?[0-9]+$");
         internal static readonly Regex IATAPattern = new Regex("^[A-Z]{3}$");
     }

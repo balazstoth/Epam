@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -13,7 +14,7 @@ namespace Airports
     {
         private readonly string timeZoneFilePath = FileCheck.GetSourceFilePath(1);
         private readonly string airportFilePath = FileCheck.GetSourceFilePath(0);
-        private readonly Regex pattern = Pattern.FullPattern;
+        private readonly Regex pattern = Pattern.Regex;
         private Dictionary<int, string> TimeZones;
 
         public Dictionary<CityKey, City> Cities { get; }
@@ -44,12 +45,14 @@ namespace Airports
         {
             int incorrectLinesCount = 0;
             string[] lines = File.ReadAllLines(airportFilePath);
+            Match match;
 
             foreach (string currentLine in lines)
             {
-                if (IsMatch(currentLine))
+                match = pattern.Match(currentLine);
+                if (match.Success)
                 {
-                    CreateInstances(currentLine.Replace("\"", "").Split(','));
+                    CreateInstances(match);
                 }
                 else
                 {
@@ -61,41 +64,28 @@ namespace Airports
         }
         private void CreateJSONFiles()
         {
-            JsonSerializer serializer = new JsonSerializer();
+            JsonSerializerSettings jss = new JsonSerializerSettings() { ContractResolver = new CamelCasePropertyNamesContractResolver(), Formatting = Formatting.Indented };
+            string[] serializedObjects = new string[3];
 
-            using (StreamWriter sw = new StreamWriter(new FileStream("Cities.JSON", FileMode.Create)))
-            using (JsonWriter jw = new JsonTextWriter(sw))
-            {
-                serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(jw, Cities.Values.ToArray());
-            }
+            serializedObjects[0] = JsonConvert.SerializeObject(Cities.Values.ToArray(), jss);
+            serializedObjects[1] = JsonConvert.SerializeObject(Countries.Values.ToArray(), jss);
+            serializedObjects[2] = JsonConvert.SerializeObject(Airports.Values.ToArray(), jss);
 
-            using (StreamWriter sw = new StreamWriter(new FileStream("Countries.JSON", FileMode.Create)))
-            using (JsonWriter jw = new JsonTextWriter(sw))
-            {
-                serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(jw, Countries.Values.ToArray());
-            }
-
-            using (StreamWriter sw = new StreamWriter(new FileStream("Airports.JSON", FileMode.Create)))
-            using (JsonWriter jw = new JsonTextWriter(sw))
-            {
-                serializer.Formatting = Formatting.Indented;
-                serializer.Serialize(jw, Airports.Values.ToArray());
-            }
+            for (int i = 0; i < serializedObjects.Length; i++)
+                File.WriteAllText(FileCheck.GetJsonFileName(i), serializedObjects[i]);
         }
-        private void CreateInstances(string[] splitted)
+        private void CreateInstances(Match match)
         {
-            int airportID = int.Parse(splitted[0]);
-            string airportName = splitted[1];
-            string cityName = splitted[2];
-            string countryName = splitted[3];
-            string IATA = splitted[4];
-            string ICAO = splitted[5];
+            int airportID = int.Parse(match.Groups["Id"].Value);
+            string airportName = match.Groups["Airport"].Value;
+            string cityName = match.Groups["City"].Value;
+            string countryName = match.Groups["Country"].Value;
+            string IATA = match.Groups["IATA"].Value;
+            string ICAO = match.Groups["ICAO"].Value;
             Location location = new Location(
-                double.Parse(splitted[6], CultureInfo.InvariantCulture),
-                double.Parse(splitted[7], CultureInfo.InvariantCulture),
-                double.Parse(splitted[8], CultureInfo.InvariantCulture));
+                double.Parse(match.Groups["Long"].Value, CultureInfo.InvariantCulture),
+                double.Parse(match.Groups["Lat"].Value, CultureInfo.InvariantCulture),
+                double.Parse(match.Groups["Alt"].Value, CultureInfo.InvariantCulture));
 
             string zoneInfoId = GetZoneInfo(airportID);
             Country country = CreateCountry(countryName);
@@ -162,10 +152,6 @@ namespace Airports
             else
                 country = Countries[countryName];
             return country;
-        }
-        private bool IsMatch(string text)
-        {
-            return pattern.IsMatch(text);
         }
         private ZoneInfoPairs[] DeserializeTimeZones()
         {

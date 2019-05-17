@@ -5,20 +5,20 @@ namespace Airports
 {
     class Timer : IDisposable
     {
-        private Stopwatch sw;
+        private Stopwatch watcher;
         private string processName;
 
-        public Timer(string processname)
+        public Timer(string processName)
         {
-            processName = processname;
-            sw = new Stopwatch();
-            sw.Start();
+            this.processName = processName;
+            watcher = new Stopwatch();
+            watcher.Start();
         }
 
         public void Dispose()
         {
-            sw.Stop();
-            Debug.WriteLine($"The {processName} process took {sw.ElapsedMilliseconds} ms!");
+            watcher.Stop();
+            Debug.WriteLine($"The {processName} process took {watcher.ElapsedMilliseconds} ms!");
         }
     }
 }

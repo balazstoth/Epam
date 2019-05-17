@@ -20,9 +20,6 @@ namespace Airports
         [JsonIgnore]
         public TimeZoneInfo timeZoneInfo { get; }
 
-        [JsonIgnore]
-        public string TimeZoneName { get { return timeZoneInfo?.DisplayName; } }
-
         public Airport(int id, int countryID, int cityID, string IATACode, string ICAOCode, string name, string timeZoneId, Location location)
         {
             Id = id;

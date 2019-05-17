@@ -6,7 +6,7 @@ namespace Airports
     public static class FileCheck
     {
         public static string[] SourcefileNames { get; } = new string[] { "airports.dat", "timezoneinfo.json" };
-        private static string path = @"SourceFiles/";
+        private static string path = "SourceFiles";
         private static string[] jsonfileNames = new string[] { "Cities", "Countries", "Airports" };
         private static string extenstion = ".json";
 

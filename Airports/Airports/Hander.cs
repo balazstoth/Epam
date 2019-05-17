@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace Airports
 {
@@ -19,11 +20,14 @@ namespace Airports
 
         public Handler()
         {
+            serializer = new Serializer();
+            deserializer = new Deserializer();
+
             if (!FileCheck.JsonFilesExist())
             {
                 try
                 {
-                    serializer = new Serializer();
+                    serializer.StartSerialize();
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -31,8 +35,6 @@ namespace Airports
                     Environment.Exit(1);
                 }
             }
-
-            deserializer = new Deserializer();
             SetValues();
         }
 
@@ -65,10 +67,11 @@ namespace Airports
         }
         public string CallGetClosesAirport()
         {
+            Regex pattern = new Regex(Pattern.LocationPattern, RegexOptions.IgnoreCase);
             Console.WriteLine("Enter the coordinates of your location: (Longitude, Latitude)");
             string location = Console.ReadLine();
 
-            if (!Pattern.LocationPattern.IsMatch(location))
+            if (!pattern.IsMatch(location))
                 throw new ArgumentException(location);
 
             // Epam: 47.48882, 19.08004
@@ -82,7 +85,8 @@ namespace Airports
             Console.WriteLine("Enter an IATA code:");
             string code = Console.ReadLine().ToUpper();
 
-            if (!Pattern.IATAPattern.IsMatch(code))
+            Regex pattern = new Regex(Pattern.IATAPattern, RegexOptions.IgnoreCase);
+            if (!pattern.IsMatch(code))
                 throw new ArgumentException(code);
 
             return GetAirportFromIATA(code);

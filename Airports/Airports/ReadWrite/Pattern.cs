@@ -4,7 +4,7 @@ namespace Airports
 {
     static class Pattern
     {
-        private static string pattern = "^(?<Id>[1-9][0-9]*)," + 
+        public const string linePattern = "^(?<Id>[1-9][0-9]*)," + 
                                       "\"(?<Airport>[^,]+)\"," + 
                                       "\"(?<City>[^,]+)\"," +
                                       "\"(?<Country>[^,]+)\"," +
@@ -14,8 +14,7 @@ namespace Airports
                                       ",(?<Lat>-?[0-9]*\\.?[0-9]+)" +
                                       ",(?<Alt>[0-9]*\\.?[0-9]+)";
 
-        internal static readonly Regex Regex = new Regex(pattern, RegexOptions.IgnoreCase);
-        internal static readonly Regex LocationPattern = new Regex("^-?[0-9]*\\.?[0-9]+,-?[0-9]*\\.?[0-9]+$");
-        internal static readonly Regex IATAPattern = new Regex("^[A-Z]{3}$");
+        public const string LocationPattern = "^-?[0-9]*\\.?[0-9]+,-?[0-9]*\\.?[0-9]+$";
+        public const string IATAPattern = "^[A-Z]{3}$";
     }
 }

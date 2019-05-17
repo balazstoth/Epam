@@ -12,9 +12,9 @@ namespace Airports
 {
     class Serializer
     {
-        private readonly string timeZoneFilePath = FileCheck.GetSourceFilePath(1);
-        private readonly string airportFilePath = FileCheck.GetSourceFilePath(0);
-        private readonly Regex pattern = Pattern.Regex;
+        private readonly string timeZoneFilePath;
+        private readonly string airportFilePath;
+        private readonly Regex pattern;
         private Dictionary<int, string> TimeZones;
 
         public Dictionary<CityKey, City> Cities { get; }
@@ -26,11 +26,13 @@ namespace Airports
             if (!FileCheck.SourceFilesExist())
                 throw new FileNotFoundException(string.Join(" / ", FileCheck.SourcefileNames));
 
-            TimeZones = DeserializeTimeZones().ToDictionary(k => k.AirportId, v => v.TimeZoneInfoId);
+            airportFilePath = FileCheck.GetSourceFilePath(0);
+            timeZoneFilePath = FileCheck.GetSourceFilePath(1);
+            pattern = new Regex(Pattern.linePattern, RegexOptions.IgnoreCase);
             Cities = new Dictionary<CityKey, City>();
             Countries = new Dictionary<string, Country>();
             Airports = new Dictionary<AirportKey, Airport>();
-            StartSerialize();
+            TimeZones = DeserializeTimeZones().ToDictionary(k => k.AirportId, v => v.TimeZoneInfoId);
         }
 
         public void StartSerialize()
@@ -77,6 +79,7 @@ namespace Airports
         private void CreateInstances(Match match)
         {
             int airportID = int.Parse(match.Groups["Id"].Value);
+            string zoneInfoId = GetZoneInfo(airportID);
             string airportName = match.Groups["Airport"].Value;
             string cityName = match.Groups["City"].Value;
             string countryName = match.Groups["Country"].Value;
@@ -87,7 +90,6 @@ namespace Airports
                 double.Parse(match.Groups["Lat"].Value, CultureInfo.InvariantCulture),
                 double.Parse(match.Groups["Alt"].Value, CultureInfo.InvariantCulture));
 
-            string zoneInfoId = GetZoneInfo(airportID);
             Country country = CreateCountry(countryName);
             City city = CreateCity(cityName, country, zoneInfoId);
             CreateAirport(airportID, airportName, IATA, ICAO, country, city, zoneInfoId, location);
@@ -155,8 +157,7 @@ namespace Airports
         }
         private ZoneInfoPairs[] DeserializeTimeZones()
         {
-            using (StreamReader sr = new StreamReader(timeZoneFilePath))
-                return JsonConvert.DeserializeObject<ZoneInfoPairs[]>(sr.ReadToEnd());
+            return JsonConvert.DeserializeObject<ZoneInfoPairs[]>(File.ReadAllText(timeZoneFilePath));
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Airports.Other;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
@@ -35,13 +36,14 @@ namespace Airports
             TimeZones = DeserializeTimeZones().ToDictionary(k => k.AirportId, v => v.TimeZoneInfoId);
         }
 
-        public void StartSerialize()
+        public DictionaryContainer StartSerialize()
         {
             using (new Timer("serialization"))
             {
                 ReadFromFile();
                 CreateJSONFiles();
             }
+            return new DictionaryContainer() { Cities = Cities, Countries = Countries, Airports = Airports };
         }
         private void ReadFromFile()
         {

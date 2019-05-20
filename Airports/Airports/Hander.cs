@@ -27,7 +27,10 @@ namespace Airports
             {
                 try
                 {
-                    serializer.StartSerialize();
+                    var dictionaries = serializer.StartSerialize();
+                    Cities = dictionaries.Cities;
+                    Countries = dictionaries.Countries;
+                    Airports = dictionaries.Airports;
                 }
                 catch (FileNotFoundException ex)
                 {
@@ -35,7 +38,8 @@ namespace Airports
                     Environment.Exit(1);
                 }
             }
-            GetValuesFromJsons();
+            else
+                GetValuesFromJsons();
         }
 
         private void GetValuesFromJsons()

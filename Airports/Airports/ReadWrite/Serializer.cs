@@ -127,7 +127,7 @@ namespace Airports
             if (!Countries.ContainsKey(countryName))
             {
                 RegionInfo rInfo = null;
-                var currentCulture = CultureInfo.GetCultures(CultureTypes.AllCultures)
+                var currentCulture = CultureInfo.GetCultures(CultureTypes.SpecificCultures)
                                                 .Where(c => c.EnglishName.ToLower().Contains(countryName.ToLower()))
                                                 .FirstOrDefault();
                 if (currentCulture == null)

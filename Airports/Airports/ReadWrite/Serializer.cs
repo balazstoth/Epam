@@ -104,7 +104,7 @@ namespace Airports
         {
             AirportKey airportKey = new AirportKey() { AirportName = airportName, CityID = city.Id };
             if (!Airports.ContainsKey(airportKey))
-                Airports.Add(airportKey, new Airport(airportID, country.Id, city.Id, IATA, ICAO, airportName, zoneInfo, location));
+                Airports.Add(airportKey, new Airport(airportID, country, city, IATA, ICAO, airportName, zoneInfo, location));
         }
         private City CreateCity(string cityName, Country country, string timeZone)
         {
@@ -112,7 +112,7 @@ namespace Airports
             CityKey cityKey = new CityKey() { CityName = cityName, CountryID = country.Id };
             if (!Cities.ContainsKey(cityKey))
             {
-                city = new City(country.Id, cityName, timeZone);
+                city = new City(country, cityName, timeZone);
                 Cities[cityKey] = city;
             }
             else

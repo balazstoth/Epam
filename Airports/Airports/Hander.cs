@@ -35,24 +35,32 @@ namespace Airports
                     Environment.Exit(1);
                 }
             }
-            SetValues();
+            GetValuesFromJsons();
         }
 
-        private void SetValues()
+        private void GetValuesFromJsons()
         {
             using (new Timer("deserialization"))
             {
+                Countries = deserializer.DeserializeCountries().ToDictionary(k => k.Name);
+
+
                 Cities = deserializer.DeserializeCities()
                             .ToDictionary(
-                                k => new CityKey() { CountryID = k.CountryId, CityName = k.Name },
-                                v => new City(v.CountryId, v.Name, v.TimeZoneId));
-
-                Countries = deserializer.DeserializeCountries().ToDictionary(k => k.Name);
+                                k => new CityKey() { CountryID = k.tmpCountryId, CityName = k.Name },
+                                v => new City(Countries.First(c => c.Value.Id == v.tmpCountryId).Value, v.Name, v.TimeZoneId));
 
                 Airports = deserializer.DeserializeAirports()
                             .ToDictionary(
-                                k => new AirportKey() { AirportName = k.Name, CityID = k.CityId },
-                                v => new Airport(v.Id, v.CountryId, v.CityId, v.IATACode, v.ICAOCode, v.Name, v.TimeZoneId, v.Location));
+                                k => new AirportKey() { AirportName = k.Name, CityID = k.tmpCityId },
+                                v => new Airport(v.Id, 
+                                                 Countries.First(c => c.Value.Id == v.tmpCountryId).Value, 
+                                                 Cities.First(c => c.Value.Id == v.tmpCityId).Value , 
+                                                 v.IATACode, 
+                                                 v.ICAOCode, 
+                                                 v.Name, 
+                                                 v.TimeZoneId, 
+                                                 v.Location));
             }
         }
 

@@ -6,8 +6,8 @@ namespace Airports
     class Airport
     {
         public int Id { get; set; }
-        public int CountryId { get; set; }
-        public int CityId { get; set; }
+        public int CountryId { get => Country.Id; }
+        public int CityId { get => City.Id; }
         public string IATACode { get; set; }
         public string ICAOCode { get; set; }
         public string Name { get; set; }
@@ -15,16 +15,42 @@ namespace Airports
         public Location Location { get; set; }
 
         [JsonIgnore]
+        public City City { get; set; }
+
+        [JsonIgnore]
+        public Country Country { get; set; }
+
+        [JsonIgnore]
+        public int tmpCityId { get; }
+
+        [JsonIgnore]
+        public int tmpCountryId { get; }
+
+        [JsonIgnore]
         public string FullName => Name.ToLower().Contains("airport") ? Name : Name + " Airport";
 
         [JsonIgnore]
         public TimeZoneInfo timeZoneInfo { get; }
 
-        public Airport(int id, int countryID, int cityID, string IATACode, string ICAOCode, string name, string timeZoneId, Location location)
+        [JsonConstructor]
+        public Airport(int id, int countryId, int cityId, string IATACode, string ICAOCode, string name, string timeZoneId, Location location)
         {
             Id = id;
-            CountryId = countryID;
-            CityId = cityID;
+            tmpCountryId = countryId;
+            tmpCityId = cityId;
+            this.IATACode = IATACode;
+            this.ICAOCode = ICAOCode;
+            Name = name;
+            TimeZoneId = timeZoneId;
+            Location = location;
+            timeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(TimeZoneId);
+        }
+
+        public Airport(int id, Country country, City city, string IATACode, string ICAOCode, string name, string timeZoneId, Location location)
+        {
+            Id = id;
+            Country = country;
+            City = city;
             this.IATACode = IATACode;
             this.ICAOCode = ICAOCode;
             Name = name;

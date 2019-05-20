@@ -1,4 +1,6 @@
-﻿namespace Airports
+﻿using Newtonsoft.Json;
+
+namespace Airports
 {
     class Country
     {
@@ -9,6 +11,14 @@
         public string ThreeLetterISOCode { get; set; }
         public string TwoLetterISOCode { get; set; }
 
+        [JsonConstructor]
+        public Country(int id, string name, string threeLetterCode, string twoLetterCode)
+        {
+            Id = id;
+            Name = name;
+            ThreeLetterISOCode = threeLetterCode;
+            TwoLetterISOCode = twoLetterCode;
+        }
         public Country(string name, string threeLetterCode, string twoLetterCode)
         {
             Id = currentID++;

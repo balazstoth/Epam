@@ -11,7 +11,7 @@ namespace Airports
             string path = @"Logs/InvalidLines.txt";
             FileCheck.DeleteLogs(path);
             Log.Logger = new LoggerConfiguration().WriteTo.File(path).CreateLogger();
-            Handler jsonHander = new Handler();
+            Manager jsonHander = new Manager();
 
             //Q1
             Console.WriteLine("Number of airports per countries:");
@@ -35,15 +35,15 @@ namespace Airports
         }
 
 
-        static string GetCountriesAndTheirAirportsCount(Handler handler)
+        static string GetCountriesAndTheirAirportsCount(Manager handler)
         {
             return handler.CallGetCountriesAndTheirAirportsCount();
         }
-        static string GetWhichCityHasMostAirPorts(Handler handler)
+        static string GetWhichCityHasMostAirPorts(Manager handler)
         {
             return handler.CallGetWhichCityHasMostAirPorts();
         }
-        static string GetClosestAirport(Handler handler)
+        static string GetClosestAirport(Manager handler)
         {
             string result = string.Empty;
             try
@@ -56,7 +56,7 @@ namespace Airports
             }
             return result;
         }
-        static string GetAirportFromIATA(Handler handler)
+        static string GetAirportFromIATA(Manager handler)
         {
             string result = string.Empty;
             try

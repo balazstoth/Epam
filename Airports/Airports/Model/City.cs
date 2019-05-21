@@ -31,9 +31,9 @@ namespace Airports
             TimeZoneId = timeZoneId;
             TimeZoneInfo = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
         }
-        public City(Country country, string name, string timeZoneId)
+        public City(int id, Country country, string name, string timeZoneId)
         {
-            Id = currentID++;
+            Id = id == -1 ? currentID++ : id;
             Name = name;
             Country = country;
             TimeZoneId = timeZoneId;
@@ -43,10 +43,6 @@ namespace Airports
         public override string ToString()
         {
             return Name;
-        }
-        public static void ResetStaticID()
-        {
-            City.currentID = 1;
         }
     }
 }

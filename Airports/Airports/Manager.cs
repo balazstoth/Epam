@@ -9,7 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace Airports
 {
-    class Handler
+    class Manager
     {
         private Serializer serializer;
         private Deserializer deserializer;
@@ -18,7 +18,7 @@ namespace Airports
         public Dictionary<string, Country> Countries { get; set; }
         public Dictionary<AirportKey, Airport> Airports { get; set; }
 
-        public Handler()
+        public Manager()
         {
             serializer = new Serializer();
             deserializer = new Deserializer();
@@ -46,13 +46,15 @@ namespace Airports
         {
             using (new Timer("deserialization"))
             {
-                Countries = deserializer.DeserializeCountries().ToDictionary(k => k.Name);
-
+                Countries = deserializer.DeserializeCountries()
+                            .ToDictionary(
+                                k => k.Name,
+                                v => new Country(v.Id, v.Name, v.ThreeLetterISOCode, v.TwoLetterISOCode));
 
                 Cities = deserializer.DeserializeCities()
                             .ToDictionary(
                                 k => new CityKey() { CountryID = k.tmpCountryId, CityName = k.Name },
-                                v => new City(Countries.First(c => c.Value.Id == v.tmpCountryId).Value, v.Name, v.TimeZoneId));
+                                v => new City(v.Id, Countries.First(c => c.Value.Id == v.tmpCountryId).Value, v.Name, v.TimeZoneId));
 
                 Airports = deserializer.DeserializeAirports()
                             .ToDictionary(

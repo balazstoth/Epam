@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 
 namespace Airports
 {
@@ -30,11 +31,6 @@ namespace Airports
         public override string ToString()
         {
             return Name;
-        }
-
-        public static void ResetStaticID()
-        {
-            Country.currentID = 1;
         }
     }
 }

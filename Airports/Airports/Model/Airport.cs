@@ -5,6 +5,7 @@ namespace Airports
 {
     class Airport
     {
+        private static int currentId = 1;
         public int Id { get; set; }
         public int CountryId { get => Country.Id; }
         public int CityId { get => City.Id; }
@@ -48,7 +49,7 @@ namespace Airports
 
         public Airport(int id, Country country, City city, string IATACode, string ICAOCode, string name, string timeZoneId, Location location)
         {
-            Id = id;
+            Id = id == -1 ? currentId++ : id;
             Country = country;
             City = city;
             this.IATACode = IATACode;

@@ -5,12 +5,15 @@ namespace Kitchen
 {
     class Order
     {
-        public List<Food> OrderedFoods { get; }
+        public List<Food> Foods { get; }
 
-        public Order(Food firstItem)
+        public Order(List<Food> items)
         {
-            OrderedFoods = new List<Food>();
-            AddFoodToOrder(firstItem);
+            if (items == null || items.Count == 0)
+                throw new ArgumentException();
+
+            Foods = new List<Food>();
+            AddFoodToOrderRange(items);
         }
 
         public void AddFoodToOrder(Food food)
@@ -18,10 +21,13 @@ namespace Kitchen
             if (food == null)
                 throw new ArgumentNullException(nameof(food));
 
-            OrderedFoods.Add(food);
+            Foods.Add(food);
         }
         public void AddFoodToOrderRange(IEnumerable<Food> foods)
         {
+            if (foods == null)
+                throw new ArgumentNullException(nameof(foods));
+
             foreach (Food food in foods)
                 AddFoodToOrder(food);
         }

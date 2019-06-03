@@ -4,6 +4,7 @@ using Newtonsoft.Json.Serialization;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -35,7 +36,6 @@ namespace Airports
             Airports = new Dictionary<AirportKey, Airport>();
             TimeZones = DeserializeTimeZones().ToDictionary(k => k.AirportId, v => v.TimeZoneInfoId);
         }
-
         public DictionaryContainer StartSerialize()
         {
             using (new Timer("serialization"))

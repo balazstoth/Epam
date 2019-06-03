@@ -4,7 +4,7 @@ namespace Airports
 {
     static class Pattern
     {
-        public const string linePattern = "^(?<Id>[1-9][0-9]*)," + 
+        public const string Airport = "^(?<Id>[1-9][0-9]*)," + 
                                       "\"(?<Airport>[^,]+)\"," + 
                                       "\"(?<City>[^,]+)\"," +
                                       "\"(?<Country>[^,]+)\"," +
@@ -14,7 +14,7 @@ namespace Airports
                                       ",(?<Lat>-?[0-9]*\\.?[0-9]+)" +
                                       ",(?<Alt>[0-9]*\\.?[0-9]+)";
 
-        public const string LocationPattern = "^-?[0-9]*\\.?[0-9]+,-?[0-9]*\\.?[0-9]+$";
-        public const string IATAPattern = "^[A-Z]{3}$";
+        public const string Location = "^-?[0-9]*\\.?[0-9]+,-?[0-9]*\\.?[0-9]+$";
+        public const string IATA = "^[A-Z]{3}$";
     }
 }

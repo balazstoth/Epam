@@ -10,12 +10,10 @@ namespace Airports
 {
     static class CsvHelper 
     {
-        const string nameSpace = "Airports";
         static Type type;
         static string[] file;
         static string[] columnNames;
         static string pattern;
-        static Regex regex;
 
         public static List<T> Parse<T>(string file) where T : class
         {
@@ -40,13 +38,14 @@ namespace Airports
             catch (RegexNotFoundException ex)
             {
                 Log.Error($"There is no regex defined for {ex.Message} class!");
+                return null;
             }
 
-            regex = new Regex(pattern);
+            Regex regex = new Regex(pattern);
 
             try
             {
-                instanceCollection = ReadDataFromFile<T>();
+                instanceCollection = ReadDataFromFile<T>(regex);
             }
             catch (PropertyNotFoundException ex)
             {
@@ -71,7 +70,7 @@ namespace Airports
             if (pattern == String.Empty)
                 throw new RegexNotFoundException(type.Name);
         }
-        private static List<T> ReadDataFromFile<T>() where T : class
+        private static List<T> ReadDataFromFile<T>(Regex regex) where T : class
         {
             bool first = true;
             int incorrectLinesCount = 0;

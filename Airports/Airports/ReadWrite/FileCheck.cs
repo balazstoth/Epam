@@ -5,9 +5,9 @@ namespace Airports
 {
     public static class FileCheck
     {
-        public static string[] SourcefileNames { get; } = new string[] { "airports.dat", "timezoneinfo.json" };
+        public static string[] SourcefileNames { get; } = new string[] { "airports.dat", "timezoneinfo.json", "airlines.dat", "segments.dat", "flights.dat" };
         private static string path = "SourceFiles";
-        private static string[] jsonfileNames = new string[] { "Cities", "Countries", "Airports" };
+        private static string[] jsonfileNames = new string[] { "Cities", "Countries", "Airports", "Airlines", "Segments", "Flights" };
         private static string extenstion = ".json";
 
         public static bool JsonFilesExist()

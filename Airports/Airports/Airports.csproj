@@ -16,7 +16,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="bin\Debug\netcoreapp2.1\SourceFiles\airlines.dat" />
     <None Include="bin\Debug\netcoreapp2.1\SourceFiles\airports.dat" />
+    <None Include="bin\Debug\netcoreapp2.1\SourceFiles\flights.dat" />
+    <None Include="bin\Debug\netcoreapp2.1\SourceFiles\segments.dat" />
   </ItemGroup>
 
   <ItemGroup>

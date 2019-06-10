@@ -21,6 +21,10 @@ namespace Airports
         [JsonIgnore]
         public TimeZoneInfo TimeZoneInfo { get; }
 
+        public City()
+        {
+        }
+
         [JsonConstructor]
         public City(int id, int countryId, string name, string timeZoneId)
         {

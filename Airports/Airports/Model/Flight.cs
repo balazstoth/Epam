@@ -21,6 +21,7 @@ namespace Airports.Model
         [JsonIgnore]
         public Segment Segment { get; set; }
 
+        [JsonConstructor]
         public Flight(int id, int number, int segmentId, string arrivalTime, string departureTime)
         {
             Id = id;

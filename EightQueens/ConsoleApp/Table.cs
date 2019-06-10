@@ -17,10 +17,10 @@ namespace EightQueens.ConsoleApp
 
             TableLength = tableLength;
             Columns = new int[TableLength];
-            Initialize();
+            InitializeTable();
         }
 
-        private void Initialize()
+        private void InitializeTable()
         {
             for (int i = 0; i < TableLength; i++)
             {

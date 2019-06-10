@@ -9,6 +9,7 @@ namespace EightQueens.ConsoleApp
             Table table = new Table(8);
             Solver solver = new Solver(table);
             solver.Start();
+            Console.WriteLine("--- Finished ---");
 
             Console.ReadKey();
         }

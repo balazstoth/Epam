@@ -24,7 +24,7 @@ namespace EightQueens.ConsoleApp
             }
         }
 
-        private bool IsEnabled(int row, int column)
+        private bool IsEnabledToPlace(int row, int column)
         {
             return CheckRow(row) && CheckDiagonalLeftDown(row, column) && CheckDiagonalLeftUp(row, column);
         }
@@ -77,7 +77,7 @@ namespace EightQueens.ConsoleApp
 
             for (int i = 0; i < table.TableLength; i++)
             {
-                if (IsEnabled(i, column))
+                if (IsEnabledToPlace(i, column))
                 {
                     table.Columns[column] = i;
                     Solve(column + 1);
